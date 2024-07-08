@@ -1,13 +1,9 @@
 import React from 'react';
+import GroundFloor from '../models/GroundFloor';
 
-const Scene2 = () => {
+const Scene2 = ({ handleAreaClick }) => {
   return (
-    <>
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="blue" />
-      </mesh>
-    </>
+    <GroundFloor onAreaClick={handleAreaClick} />
   );
 };
 
