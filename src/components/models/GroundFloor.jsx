@@ -18,7 +18,10 @@ const GroundFloor = (props) => {
 
       raycaster.current.setFromCamera(mouse.current, camera);
 
-      const intersects = raycaster.current.intersectObjects(scene.children, true);
+      const intersects = raycaster.current.intersectObjects(
+        [nodes.area01, nodes.area02, nodes.area03, nodes.createdArea],
+        true
+      );
 
       if (intersects.length > 0) {
         const intersectedObject = intersects[0].object;
@@ -29,29 +32,7 @@ const GroundFloor = (props) => {
         }
 
         // Set the color of the new intersected object and handle drawer content
-        switch (intersectedObject.name) {
-          case 'area01':
-            intersectedObject.material.color.setHex(0xB01C12);
-            onAreaClick('area01');
-            break;
-          case 'area02':
-            intersectedObject.material.color.setHex(0xB01C12);
-            onAreaClick('area02');
-            break;
-          case 'area03':
-            intersectedObject.material.color.setHex(0xB01C12);
-            onAreaClick('area03');
-            break;
-          case 'createdArea':
-            intersectedObject.material.color.setHex(0xB01C12);
-            onAreaClick('createdArea');
-            break;
-          default:
-            console.log('Unknown area clicked');
-            break;
-        }
-
-        // Update the last intersected object
+        handleAreaClick(intersectedObject);
         setLastIntersectedObject(intersectedObject);
       }
     };
@@ -61,7 +42,7 @@ const GroundFloor = (props) => {
     return () => {
       window.removeEventListener('click', handleMouseClick);
     };
-  }, [camera, onAreaClick, scene.children, lastIntersectedObject]);
+  }, [camera, onAreaClick, nodes.area01, nodes.area02, nodes.area03, nodes.createdArea, lastIntersectedObject]);
 
   return (
     <group {...props} dispose={null}>

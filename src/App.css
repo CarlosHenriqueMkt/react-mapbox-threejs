@@ -34,7 +34,7 @@ button.disabled, .MuiButton-root.disabled {
   background: rgba(255, 255, 255, 0.8);
   padding: 10px;
   border-radius: 5px;
-  z-index: 10; /* Ensure it is in front of the canvas */
+  z-index: -1;
 }
 
 .overlay label, .overlay select {

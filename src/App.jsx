@@ -37,8 +37,8 @@ const Main = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState('');
 
-  const handleAreaClick = (areaName) => {
-    setDrawerContent(areaName);
+  const handleAreaClick = (intersectedObject) => {
+    setDrawerContent(intersectedObject.name);
     setDrawerOpen(true);
   };
 
