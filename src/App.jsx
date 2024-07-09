@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
 import './App.css';
 import { Routes, Route, useLocation, Link } from 'react-router-dom';
-import { Container, AppBar, Toolbar, Button, Grid, Drawer, Typography, IconButton } from '@mui/material';
+import { Container, AppBar, Toolbar, Button, Grid } from '@mui/material';
 import Scene1 from './components/homeScene';
 import Scene2 from './components/anotherPageScene';
 import MainRenderer from './components/canvas';
-import CloseIcon from '@mui/icons-material/Close';
+import IntersectionDrawer from './components/IntersectionDrawer';
+import React, { useState } from 'react';
 
 const App = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <Container maxWidth="xl">
       <AppBar position="static">
@@ -24,27 +26,17 @@ const App = () => {
         </Grid>
         <Grid item xs={9}>
           <div className="main-content">
-            <Main />
+            <Main setDrawerOpen={setDrawerOpen} />
           </div>
         </Grid>
       </Grid>
+      <IntersectionDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Container>
   );
 };
 
-const Main = () => {
+const Main = ({ setDrawerOpen }) => {
   const location = useLocation();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerContent, setDrawerContent] = useState('');
-
-  const handleAreaClick = (intersectedObject) => {
-    setDrawerContent(intersectedObject.name);
-    setDrawerOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-  };
 
   const renderOverlay = () => {
     switch (location.pathname) {
@@ -57,39 +49,15 @@ const Main = () => {
     }
   };
 
-  const getDrawerContent = () => {
-    switch (drawerContent) {
-      case 'area01':
-        return <Typography variant="body1">Content for Area 01</Typography>;
-      case 'area02':
-        return <Typography variant="body1">Content for Area 02</Typography>;
-      case 'area03':
-        return <Typography variant="body1">Content for Area 03</Typography>;
-      case 'createdArea':
-        return <Typography variant="body1">Content for Created Area</Typography>;
-      default:
-        return <Typography variant="body1">No content available</Typography>;
-    }
-  };
-
   return (
     <>
-      <MainRenderer>
+      <MainRenderer setDrawerOpen={setDrawerOpen}>
         <Routes>
-          <Route path="/" element={<Scene1 handleAreaClick={handleAreaClick} />} />
-          <Route path="/scene2" element={<Scene2 handleAreaClick={handleAreaClick} />} />
+          <Route path="/" element={<Scene1 setDrawerOpen={setDrawerOpen} />} />
+          <Route path="/scene2" element={<Scene2 setDrawerOpen={setDrawerOpen} />} />
         </Routes>
       </MainRenderer>
       {renderOverlay()}
-      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
-        <div style={{ width: 250, padding: 16 }}>
-          <IconButton onClick={handleDrawerClose}>
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6">{drawerContent}</Typography>
-          {getDrawerContent()}
-        </div>
-      </Drawer>
     </>
   );
 };

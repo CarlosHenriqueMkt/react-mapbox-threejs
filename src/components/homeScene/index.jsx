@@ -1,9 +1,9 @@
 import React from 'react';
 import GroundFloor from '../models/GroundFloor';
 
-const Scene1 = ({ handleAreaClick }) => {
+const Scene1 = ({ setDrawerOpen }) => {
   return (
-    <GroundFloor onAreaClick={handleAreaClick} />
+    <GroundFloor setDrawerOpen={setDrawerOpen} />
   );
 };
 

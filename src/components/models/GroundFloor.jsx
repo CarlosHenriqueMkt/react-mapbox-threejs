@@ -1,50 +1,18 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useGLTF } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
-import * as THREE from 'three';
+import IntersectionDrawer from '../IntersectionDrawer';
 
 const GroundFloor = (props) => {
-  const { onAreaClick } = props;
   const { nodes, materials } = useGLTF('/3f.glb');
-  const { scene, camera } = useThree();
-  const raycaster = useRef(new THREE.Raycaster());
-  const mouse = useRef(new THREE.Vector2());
-  const [lastIntersectedObject, setLastIntersectedObject] = useState(null);
+  const {setDrawerOpen} = props
 
-  useEffect(() => {
-    const handleMouseClick = (event) => {
-      mouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      raycaster.current.setFromCamera(mouse.current, camera);
-
-      const intersects = raycaster.current.intersectObjects(
-        [nodes.area01, nodes.area02, nodes.area03, nodes.createdArea],
-        true
-      );
-
-      if (intersects.length > 0) {
-        const intersectedObject = intersects[0].object;
-
-        // Reset the color of the last intersected object
-        if (lastIntersectedObject && lastIntersectedObject !== intersectedObject) {
-          lastIntersectedObject.material.color.setHex(0xFFFFFF); // Change to white
-        }
-
-        // Set the color of the new intersected object and handle drawer content
-        handleAreaClick(intersectedObject);
-        setLastIntersectedObject(intersectedObject);
-      }
-    };
-
-    window.addEventListener('click', handleMouseClick);
-
-    return () => {
-      window.removeEventListener('click', handleMouseClick);
-    };
-  }, [camera, onAreaClick, nodes.area01, nodes.area02, nodes.area03, nodes.createdArea, lastIntersectedObject]);
+  const handleMeshClick = () => {
+    console.log('Mesh clicked');
+    setDrawerOpen(true);
+  };
 
   return (
+    <>
     <group {...props} dispose={null}>
       <mesh
         castShadow
@@ -53,6 +21,7 @@ const GroundFloor = (props) => {
         material={materials.area02}
         position={[0.109, 0, -0.186]}
         name='area02'
+        onClick={handleMeshClick}
       />
       <mesh
         castShadow
@@ -237,6 +206,7 @@ const GroundFloor = (props) => {
         position={[-0.086, -0.004, 0.104]}
         rotation={[0, 0, 3.137]}
         name='area01'
+        onClick={() => console.log('fui clicado')}
       />
       <mesh
         castShadow
@@ -255,6 +225,7 @@ const GroundFloor = (props) => {
         rotation={[0.001, 0.215, 3.137]}
         scale={[1.32, 0.989, 0.327]}
         name='area03'
+        onClick={() => console.log('fui clicado')}
       />
       <mesh
         castShadow
@@ -1000,6 +971,7 @@ const GroundFloor = (props) => {
         position={[0.009, 0.015, -0.157]}
         scale={[2.43, 2.43, 1.341]}
         name='createdArea'
+        onClick={() => console.log('fui clicado')}
       />
       <mesh
         castShadow
@@ -1394,6 +1366,7 @@ const GroundFloor = (props) => {
         scale={[1.296, 1, 0.037]}
       />
     </group>
+    </>
   )
 }
 
