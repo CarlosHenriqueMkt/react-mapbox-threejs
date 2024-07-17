@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Scene1Overlay from "../components/OverlaySceneOne";
 import Scene2Overlay from "../components/OverlaySceneTwo";
 import Scene1 from "../pages/SceneOne";
@@ -11,24 +11,26 @@ export default function DashRoutes({ setOpenDrawerId }) {
 
 	const renderOverlay = () => {
 		switch (location.pathname) {
-			case "/":
+			case "/dashboard":
 				return <Scene1Overlay />;
-			case "/scene2":
+			case "/dashboard/scene2":
 				return <Scene2Overlay />;
 			default:
 				return null;
 		}
 	};
+
 	return (
 		<>
 			<Renderer setOpenDrawerId={setOpenDrawerId}>
 				<Routes>
+					<Route path="/" element={<Navigate to="scene1" />} />
 					<Route
-						path="/"
+						path="scene1"
 						element={<Scene1 setOpenDrawerId={setOpenDrawerId} />}
 					/>
 					<Route
-						path="/scene2"
+						path="scene2"
 						element={<Scene2 setOpenDrawerId={setOpenDrawerId} />}
 					/>
 				</Routes>

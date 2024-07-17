@@ -49,16 +49,20 @@ const NavButtons = () => {
 			<Button
 				color="inherit"
 				component={Link}
-				to="/"
-				className={currentPath === "/" ? "disabled" : ""}
+				to="/dashboard/scene1"
+				className={
+					currentPath === "/dashboard/scene1" ? "disabled" : ""
+				}
 			>
 				Scene 1
 			</Button>
 			<Button
 				color="inherit"
 				component={Link}
-				to="/scene2"
-				className={currentPath === "/scene2" ? "disabled" : ""}
+				to="/dashboard/scene2"
+				className={
+					currentPath === "/dashboard/scene2" ? "disabled" : ""
+				}
 			>
 				Scene 2
 			</Button>
