@@ -1,3 +1,4 @@
+// App.js
 import './App.css';
 import { Routes, Route, useLocation, Link } from 'react-router-dom';
 import { Container, AppBar, Toolbar, Button, Grid } from '@mui/material';
@@ -8,7 +9,7 @@ import IntersectionDrawer from './components/IntersectionDrawer';
 import React, { useState } from 'react';
 
 const App = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [openDrawerId, setOpenDrawerId] = useState(null);
 
   return (
     <Container maxWidth="xl">
@@ -26,16 +27,23 @@ const App = () => {
         </Grid>
         <Grid item xs={9}>
           <div className="main-content">
-            <Main setDrawerOpen={setDrawerOpen} />
+            <Main setOpenDrawerId={setOpenDrawerId} />
           </div>
         </Grid>
       </Grid>
-      <IntersectionDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      {Array.from({ length: 9 }, (_, index) => (
+        <IntersectionDrawer
+          key={index}
+          open={openDrawerId === index}
+          onClose={() => setOpenDrawerId(null)}
+          drawerContent={`Drawer Content for Mesh ${index + 1}`}
+        />
+      ))}
     </Container>
   );
 };
 
-const Main = ({ setDrawerOpen }) => {
+const Main = ({ setOpenDrawerId }) => {
   const location = useLocation();
 
   const renderOverlay = () => {
@@ -51,10 +59,10 @@ const Main = ({ setDrawerOpen }) => {
 
   return (
     <>
-      <MainRenderer setDrawerOpen={setDrawerOpen}>
+      <MainRenderer setOpenDrawerId={setOpenDrawerId}>
         <Routes>
-          <Route path="/" element={<Scene1 setDrawerOpen={setDrawerOpen} />} />
-          <Route path="/scene2" element={<Scene2 setDrawerOpen={setDrawerOpen} />} />
+          <Route path="/" element={<Scene1 setOpenDrawerId={setOpenDrawerId} />} />
+          <Route path="/scene2" element={<Scene2 setOpenDrawerId={setOpenDrawerId} />} />
         </Routes>
       </MainRenderer>
       {renderOverlay()}
