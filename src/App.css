@@ -14,6 +14,14 @@
   height: 100vh;
 }
 
+.main-content > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 button.disabled, .MuiButton-root.disabled {
   pointer-events: none;
   opacity: 0.5;
@@ -21,14 +29,12 @@ button.disabled, .MuiButton-root.disabled {
 
 .overlay {
   position: absolute;
-  width: 100%;
-  height: 100px;
   top: 20px;
   left: 20px;
   background: rgba(255, 255, 255, 0.8);
   padding: 10px;
   border-radius: 5px;
-  z-index: 1;
+  z-index: -1;
 }
 
 .overlay label, .overlay select {
