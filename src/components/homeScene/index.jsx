@@ -1,9 +1,9 @@
 import React from 'react';
 import GroundFloor from '../models/GroundFloor';
 
-const Scene1 = ({ setDrawerOpen }) => {
+const Scene1 = ({ setOpenDrawerId }) => {
   return (
-    <GroundFloor setDrawerOpen={setDrawerOpen} />
+    <GroundFloor setOpenDrawerId={setOpenDrawerId} />
   );
 };
 

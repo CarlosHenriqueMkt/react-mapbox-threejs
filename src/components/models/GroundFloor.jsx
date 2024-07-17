@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useGLTF } from '@react-three/drei';
-import IntersectionDrawer from '../IntersectionDrawer';
 
 const GroundFloor = (props) => {
   const { nodes, materials } = useGLTF('/3f.glb');
-  const {setDrawerOpen} = props
+  const { setOpenDrawerId } = props
 
-  const handleMeshClick = () => {
-    console.log('Mesh clicked');
-    setDrawerOpen(true);
+  const handleMeshClick = (meshId) => {
+    console.log(`Mesh ${meshId} clicked`);
+    setOpenDrawerId(meshId);
   };
 
   return (
@@ -21,7 +20,7 @@ const GroundFloor = (props) => {
         material={materials.area02}
         position={[0.109, 0, -0.186]}
         name='area02'
-        onClick={handleMeshClick}
+        onClick={() => handleMeshClick(2)}
       />
       <mesh
         castShadow
@@ -206,7 +205,7 @@ const GroundFloor = (props) => {
         position={[-0.086, -0.004, 0.104]}
         rotation={[0, 0, 3.137]}
         name='area01'
-        onClick={() => console.log('fui clicado')}
+        onClick={() => handleMeshClick(1)}
       />
       <mesh
         castShadow
@@ -225,7 +224,7 @@ const GroundFloor = (props) => {
         rotation={[0.001, 0.215, 3.137]}
         scale={[1.32, 0.989, 0.327]}
         name='area03'
-        onClick={() => console.log('fui clicado')}
+        onClick={() => handleMeshClick(3)}
       />
       <mesh
         castShadow
@@ -971,7 +970,7 @@ const GroundFloor = (props) => {
         position={[0.009, 0.015, -0.157]}
         scale={[2.43, 2.43, 1.341]}
         name='createdArea'
-        onClick={() => console.log('fui clicado')}
+        onClick={() => handleMeshClick(4)}
       />
       <mesh
         castShadow
