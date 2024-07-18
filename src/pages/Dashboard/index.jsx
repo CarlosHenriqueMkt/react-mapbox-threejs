@@ -2,7 +2,6 @@ import "./dashboard.css";
 import React, { useState } from "react";
 import { Container, AppBar, Toolbar, Button, Grid } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import CustomDrawer from "../../components/Drawer";
 import DashRoutes from "../../routes/DashRoutes";
 
 export default function VXBoard() {
@@ -28,14 +27,14 @@ export default function VXBoard() {
 					</div>
 				</Grid>
 			</Grid>
-			{Array.from({ length: 9 }, (_, index) => (
+			{/* {Array.from({ length: 9 }, (_, index) => (
 				<CustomDrawer
 					key={index}
 					open={openDrawerId === index}
 					onClose={() => setOpenDrawerId(null)}
 					drawerContent={`Drawer Content for Mesh ${index + 1}`}
 				/>
-			))}
+			))} */}
 		</Container>
 	);
 }

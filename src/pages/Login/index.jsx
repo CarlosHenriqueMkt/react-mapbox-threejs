@@ -6,7 +6,7 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 
 	const handleLogin = () => {
-		navigate("/dashboard");
+		navigate("/dubai");
 	};
 
 	return (

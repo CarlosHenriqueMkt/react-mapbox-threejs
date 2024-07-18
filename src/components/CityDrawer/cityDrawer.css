@@ -1,0 +1,36 @@
+.custom-drawer {
+	background-color: transparent;
+	border-radius: 15px;
+	padding: 20px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.drawer-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+	padding: 10px;
+	border-radius: 10px;
+	background-color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.drawer-item:last-child {
+	margin-bottom: 0;
+}
+
+.drawer-item-label {
+	font-weight: bold;
+	font-size: 16px;
+	color: #333;
+}
+
+.drawer-item-value {
+	font-weight: bold;
+	font-size: 16px;
+	color: #7f62ff;
+	background-color: #f3e7ff;
+	padding: 5px 10px;
+	border-radius: 10px;
+}

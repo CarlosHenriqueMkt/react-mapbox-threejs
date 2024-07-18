@@ -1,0 +1,164 @@
+import React, { useEffect, useRef, useState } from "react";
+import mapboxgl from "mapbox-gl";
+import mapboxglSupported from "@mapbox/mapbox-gl-supported";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "./dubai.css";
+import CityDrawer from "../../components/CityDrawer";
+import { pointsData } from "../../data/mapbox";
+
+export default function Dubai() {
+	const mapContainerRef = useRef();
+	const mapRef = useRef();
+	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [drawerContent, setDrawerContent] = useState(null);
+
+	useEffect(() => {
+		if (!mapboxglSupported.supported()) {
+			alert(
+				"Your browser does not support WebGL. Please use a browser that supports WebGL to view the map."
+			);
+			return;
+		}
+
+		mapboxgl.accessToken =
+			"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ";
+
+		mapRef.current = new mapboxgl.Map({
+			container: mapContainerRef.current,
+			style: "mapbox://styles/mapbox/light-v11",
+			center: [55.274376, 25.197197],
+			zoom: 15.5,
+			pitch: 45,
+			bearing: -17.6,
+			antialias: true,
+		});
+
+		mapRef.current.on("load", () => {
+			// Check if the layer already exists
+			if (!mapRef.current.getLayer("add-3d-buildings")) {
+				const layers = mapRef.current.getStyle().layers;
+				const labelLayerId = layers.find(
+					(layer) =>
+						layer.type === "symbol" && layer.layout["text-field"]
+				).id;
+				mapRef.current.addLayer(
+					{
+						id: "add-3d-buildings",
+						source: "composite",
+						"source-layer": "building",
+						filter: ["==", "extrude", "true"],
+						type: "fill-extrusion",
+						minzoom: 15,
+						paint: {
+							"fill-extrusion-color": "#aaa",
+							"fill-extrusion-height": [
+								"interpolate",
+								["linear"],
+								["zoom"],
+								15,
+								0,
+								15.05,
+								["get", "height"],
+							],
+							"fill-extrusion-base": [
+								"interpolate",
+								["linear"],
+								["zoom"],
+								15,
+								0,
+								15.05,
+								["get", "min_height"],
+							],
+							"fill-extrusion-opacity": 0.6,
+						},
+					},
+					labelLayerId
+				);
+			}
+			addInteractivePoints(mapRef.current);
+		});
+	}, []);
+
+	const addInteractivePoints = (map) => {
+		pointsData.forEach((point) => {
+			const marker = new mapboxgl.Marker()
+				.setLngLat(point.coordinates)
+				.addTo(map);
+
+			marker.getElement().addEventListener("click", () => {
+				map.flyTo({
+					center: point.coordinates,
+					zoom: 17,
+					speed: 1.2,
+					curve: 1,
+					easing(t) {
+						return t;
+					},
+				});
+				setDrawerContent(
+					<div>
+						<h2>{point.description}</h2>
+						<div className="drawer-item">
+							<span className="drawer-item-label">Alarms</span>
+							<span className="drawer-item-value">
+								{point.alarms}
+							</span>
+						</div>
+						<div className="drawer-item">
+							<span className="drawer-item-label">
+								Work Orders
+							</span>
+							<span className="drawer-item-value">
+								{point.workOrders}
+							</span>
+						</div>
+						<div className="drawer-item">
+							<span className="drawer-item-label">
+								Active WOs
+							</span>
+							<span className="drawer-item-value">
+								{point.activeWO}
+							</span>
+						</div>
+						<div className="drawer-item">
+							<span className="drawer-item-label">
+								Closed WOs
+							</span>
+							<span className="drawer-item-value">
+								{point.closedWO}
+							</span>
+						</div>
+						<div className="drawer-item">
+							<span className="drawer-item-label">SLA Met</span>
+							<span className="drawer-item-value">
+								{point.slaMet}
+							</span>
+						</div>
+					</div>
+				);
+				setDrawerOpen(true);
+			});
+		});
+	};
+
+	return (
+		<>
+			<div style={{ position: "relative", height: "100vh" }}>
+				<div
+					ref={mapContainerRef}
+					style={{
+						position: "absolute",
+						top: 0,
+						bottom: 0,
+						width: "100%",
+					}}
+				></div>
+				<CityDrawer
+					drawerOpen={drawerOpen}
+					onClose={() => setDrawerOpen(false)}
+					content={drawerContent}
+				/>
+			</div>
+		</>
+	);
+}
