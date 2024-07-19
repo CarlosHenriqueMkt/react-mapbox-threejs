@@ -1,17 +1,17 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App.jsx'
-import './index.css'
-import { ThemeProvider } from '@mui/material'
-import theme from './theme.js'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import App from "./App.jsx";
+import theme from "./theme.js";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Router>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </Router>
-  </React.StrictMode>,
-)
+ReactDOM.createRoot(document.getElementById("root")).render(
+	<React.StrictMode>
+		<Router>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<App />
+			</ThemeProvider>
+		</Router>
+	</React.StrictMode>
+);

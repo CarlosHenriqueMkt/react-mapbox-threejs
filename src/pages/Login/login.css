@@ -1,0 +1,17 @@
+.imageWrapper img:nth-child(1) {
+	width: 50%;
+}
+
+.imageWrapper img:nth-child(2) {
+	width: 100%;
+}
+
+@media (orientation: portrait) {
+	.imageWrapper img:nth-child(1) {
+		width: 70%;
+	}
+
+	.imageWrapper img:nth-child(2) {
+		width: 100%;
+	}
+}
