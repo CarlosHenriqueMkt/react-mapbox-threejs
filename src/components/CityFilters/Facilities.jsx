@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import DropdownBox from "../../styledComponents/Dropdown";
+import DropdownBoxContainer from "../../styledComponents/Dropdown";
 
 const facilities = [
 	{
@@ -376,7 +377,7 @@ const Facilities = () => {
 					Facilities
 				</Typography>
 			</Box>
-			<DropdownBox open={open}>
+			<DropdownBoxContainer open={open}>
 				<Box sx={{ padding: theme.spacing(2) }}>
 					<TextField
 						fullWidth
@@ -394,7 +395,7 @@ const Facilities = () => {
 					/>
 				</Box>
 				{renderFacilities(facilities)}
-			</DropdownBox>
+			</DropdownBoxContainer>
 		</Box>
 	);
 };

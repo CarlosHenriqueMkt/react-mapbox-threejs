@@ -11,6 +11,7 @@ import {
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { styled } from "@mui/system";
 import DropdownBox from "../../styledComponents/Dropdown";
+import DropdownBoxContainer from "../../styledComponents/Dropdown";
 
 const menuItems = [
 	{
@@ -115,7 +116,7 @@ export default function Viewer() {
 					3D Viewer
 				</Typography>
 			</Box>
-			<DropdownBox open={open}>
+			<DropdownBoxContainer open={open}>
 				{menuItems.map((item, index) => (
 					<MenuItem
 						key={item.text}
@@ -148,7 +149,7 @@ export default function Viewer() {
 						<ListItemText primary={item.text} />
 					</MenuItem>
 				))}
-			</DropdownBox>
+			</DropdownBoxContainer>
 		</Box>
 	);
 }
