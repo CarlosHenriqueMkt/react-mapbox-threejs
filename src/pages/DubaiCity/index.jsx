@@ -5,6 +5,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "./dubai.css";
 import CityDrawer from "../../components/CityDrawer";
 import { pointsData } from "../../data/mapbox";
+import CityUI from "../../components/CityUI";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
@@ -143,16 +144,21 @@ export default function Dubai() {
 
 	return (
 		<>
-			<div style={{ position: "relative", height: "100vh" }}>
+			<div
+				style={{
+					position: "relative",
+				}}
+			>
 				<div
 					ref={mapContainerRef}
 					style={{
-						position: "absolute",
+						position: "fixed",
 						top: 0,
 						bottom: 0,
 						width: "100%",
 					}}
 				></div>
+				<CityUI />
 				<CityDrawer
 					drawerOpen={drawerOpen}
 					onClose={() => setDrawerOpen(false)}
