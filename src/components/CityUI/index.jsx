@@ -5,14 +5,15 @@ import { Box } from "@mui/material";
 
 export default function CityUI() {
 	return (
-		<Box position="relative" maxHeight="100vh">
+		<>
 			<Box
 				position="absolute"
+				zIndex="999"
 				sx={{ display: "flex", flexDirection: "column" }}
 			>
 				<CityHeader />
 				<CityFilters />
 			</Box>
-		</Box>
+		</>
 	);
 }

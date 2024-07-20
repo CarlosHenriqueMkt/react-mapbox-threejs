@@ -1,3 +1,4 @@
+// Dubai.js
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
@@ -5,7 +6,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "./dubai.css";
 import CityDrawer from "../../components/CityDrawer";
 import { pointsData } from "../../data/mapbox";
-import CityUI from "../../components/CityUI";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
@@ -35,7 +35,6 @@ export default function Dubai() {
 		});
 
 		mapRef.current.on("load", () => {
-			// Check if the layer already exists
 			if (!mapRef.current.getLayer("add-3d-buildings")) {
 				const layers = mapRef.current.getStyle().layers;
 				const labelLayerId = layers.find(
@@ -143,28 +142,25 @@ export default function Dubai() {
 	};
 
 	return (
-		<>
+		<div
+			style={{
+				position: "relative",
+			}}
+		>
 			<div
+				ref={mapContainerRef}
 				style={{
-					position: "relative",
+					position: "fixed",
+					top: 0,
+					bottom: 0,
+					width: "100%",
 				}}
-			>
-				<div
-					ref={mapContainerRef}
-					style={{
-						position: "fixed",
-						top: 0,
-						bottom: 0,
-						width: "100%",
-					}}
-				></div>
-				<CityUI />
-				<CityDrawer
-					drawerOpen={drawerOpen}
-					onClose={() => setDrawerOpen(false)}
-					content={drawerContent}
-				/>
-			</div>
-		</>
+			></div>
+			<CityDrawer
+				drawerOpen={drawerOpen}
+				onClose={() => setDrawerOpen(false)}
+				content={drawerContent}
+			/>
+		</div>
 	);
 }

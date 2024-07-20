@@ -8,31 +8,48 @@ import {
 	IconButton,
 	Typography,
 } from "@mui/material";
-import {
-	Menu as MenuIcon,
-	Settings as SettingsIcon,
-	Notifications as NotificationsIcon,
-	Assignment as AssignmentIcon,
-	Monitor as MonitorIcon,
-	Headset as HeadsetIcon,
-} from "@mui/icons-material";
+import { Menu as MenuIcon } from "@mui/icons-material";
 import { styled } from "@mui/system";
+import DropdownBox from "../../styledComponents/Dropdown";
 
 const menuItems = [
-	{ text: "3D Viewer", icon: <SettingsIcon /> },
-	{ text: "Facilities", icon: <AssignmentIcon /> },
-	{ text: "Alarms", icon: <NotificationsIcon /> },
-	{ text: "Work Orders", icon: <AssignmentIcon /> },
-	{ text: "Energy Monitoring", icon: <MonitorIcon /> },
-	{ text: "Support", icon: <HeadsetIcon /> },
+	{
+		text: "3D Viewer",
+		icon: "/icon/view.svg",
+		iconSelected: "/icon/view-white.svg",
+		onClick: () => console.log("3D Viewer clicked"), //cb function of the item
+	},
+	{
+		text: "Facilities",
+		icon: "/icon/building.svg",
+		iconSelected: "/icon/building-white.svg",
+		onClick: () => console.log("Facilities clicked"),
+	},
+	{
+		text: "Alarms",
+		icon: "/icon/alarm.svg",
+		iconSelected: "/icon/alarm-white.svg",
+		onClick: () => console.log("Alarms clicked"),
+	},
+	{
+		text: "Work Orders",
+		icon: "/icon/clipboard-text.svg",
+		iconSelected: "/icon/clipboard-text-white.svg",
+		onClick: () => console.log("Work Orders clicked"),
+	},
+	{
+		text: "Energy Monitoring",
+		icon: "/icon/energy.svg",
+		iconSelected: "/icon/energy-white.svg",
+		onClick: () => console.log("Energy Monitoring clicked"),
+	},
+	{
+		text: "Support",
+		icon: "/icon/support.svg",
+		iconSelected: "/icon/support-white.svg",
+		onClick: () => console.log("Support clicked"),
+	},
 ];
-
-const DropdownBox = styled(Box)(({ theme, open }) => ({
-	height: open ? "50vh" : "0",
-	overflow: "hidden",
-	transition: "height 0.5s ease",
-	backgroundColor: theme.palette.background.paper,
-}));
 
 export default function Viewer() {
 	const theme = useTheme();
@@ -43,11 +60,12 @@ export default function Viewer() {
 		setOpen(!open);
 	};
 
-	const handleSelect = (index) => {
+	const handleSelect = (index, onClick) => {
 		setSelected((prevSelected) => ({
 			...prevSelected,
 			[index]: !prevSelected[index],
 		}));
+		onClick(); // Call the specific function for each item
 	};
 
 	return (
@@ -56,7 +74,8 @@ export default function Viewer() {
 				position: "absolute",
 				top: 120,
 				left: 35,
-				width: "350px",
+				width: "274px",
+				paddingInline: "16px",
 				boxShadow: 3,
 				borderRadius: "8px",
 				backgroundColor: theme.palette.background.paper,
@@ -69,7 +88,7 @@ export default function Viewer() {
 					height: "100%",
 					display: "flex",
 					alignItems: "center",
-					padding: theme.spacing(1),
+					paddingBlock: "13px",
 					cursor: "pointer",
 					backgroundColor: "transparent",
 				}}
@@ -100,13 +119,15 @@ export default function Viewer() {
 				{menuItems.map((item, index) => (
 					<MenuItem
 						key={item.text}
-						onClick={() => handleSelect(index)}
+						onClick={() => handleSelect(index, item.onClick)}
 						selected={selected[index]}
 						style={{
 							backgroundColor: selected[index]
 								? theme.palette.primary.main
 								: "inherit",
 							color: selected[index] ? "white" : "inherit",
+							borderRadius: "8px",
+							padding: "12px",
 						}}
 					>
 						<ListItemIcon
@@ -114,7 +135,15 @@ export default function Viewer() {
 								color: selected[index] ? "white" : "inherit",
 							}}
 						>
-							{item.icon}
+							<Box
+								component="img"
+								src={
+									selected[index]
+										? item.iconSelected
+										: item.icon
+								}
+								style={{ width: 24, height: 24 }}
+							/>
 						</ListItemIcon>
 						<ListItemText primary={item.text} />
 					</MenuItem>

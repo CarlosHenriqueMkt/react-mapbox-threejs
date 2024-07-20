@@ -51,7 +51,7 @@ export default function CityHeader() {
 				>
 					<Box
 						component="img"
-						src="logo.png"
+						src="/logo.png"
 						alt="VirtuX Logo"
 						sx={{ height: 30, marginRight: 2 }}
 					/>
@@ -123,7 +123,7 @@ export default function CityHeader() {
 						>
 							<Avatar
 								alt="User Avatar"
-								src="avatar.png"
+								src="/avatar.png"
 								sx={{ marginRight: 1 }}
 							/>
 							<Box
