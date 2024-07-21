@@ -1,17 +1,14 @@
-// Dubai.js
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "./dubai.css";
-import CityDrawer from "../../components/CityDrawer";
 import { pointsData } from "../../data/mapbox";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
-	const [drawerOpen, setDrawerOpen] = useState(false);
-	const [drawerContent, setDrawerContent] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!mapboxglSupported.supported()) {
@@ -86,57 +83,7 @@ export default function Dubai() {
 				.addTo(map);
 
 			marker.getElement().addEventListener("click", () => {
-				map.flyTo({
-					center: point.coordinates,
-					zoom: 17,
-					speed: 1.2,
-					curve: 1,
-					easing(t) {
-						return t;
-					},
-				});
-				setDrawerContent(
-					<div>
-						<h2>{point.description}</h2>
-						<div className="drawer-item">
-							<span className="drawer-item-label">Alarms</span>
-							<span className="drawer-item-value">
-								{point.alarms}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">
-								Work Orders
-							</span>
-							<span className="drawer-item-value">
-								{point.workOrders}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">
-								Active WOs
-							</span>
-							<span className="drawer-item-value">
-								{point.activeWO}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">
-								Closed WOs
-							</span>
-							<span className="drawer-item-value">
-								{point.closedWO}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">SLA Met</span>
-							<span className="drawer-item-value">
-								{point.slaMet}
-							</span>
-						</div>
-					</div>
-				);
-				setDrawerOpen(true);
+				navigate(`/dubai/${point.path}`);
 			});
 		});
 	};
@@ -156,11 +103,6 @@ export default function Dubai() {
 					width: "100%",
 				}}
 			></div>
-			<CityDrawer
-				drawerOpen={drawerOpen}
-				onClose={() => setDrawerOpen(false)}
-				content={drawerContent}
-			/>
 		</div>
 	);
 }

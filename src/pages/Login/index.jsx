@@ -45,7 +45,7 @@ export default function LoginPage() {
 					lg: theme.spacing(20),
 				},
 				padding: theme.spacing(10),
-				background: theme.palette.primary.background,
+				background: theme.palette.background.main,
 			}}
 		>
 			<Box

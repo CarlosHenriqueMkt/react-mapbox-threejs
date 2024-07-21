@@ -141,6 +141,8 @@ export default function UseCases() {
 	useEffect(() => {
 		if (location.pathname === "/dubai") {
 			setTitle("Use Cases");
+			setOpen(false);
+			setExpanded({});
 		} else if (location.pathname.match(/\/dubai\/[^/]+$/)) {
 			setTitle("Solutions & Scenarios");
 		} else {
@@ -303,6 +305,7 @@ export default function UseCases() {
 					sx={{
 						ml: 1,
 						color: open ? theme.palette.primary.main : "inherit",
+						fontWeight: 700,
 					}}
 				>
 					{title}

@@ -1,5 +1,4 @@
-// Facilities.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	MenuItem,
 	ListItemIcon,
@@ -18,7 +17,7 @@ import {
 	ArrowDropDown as ArrowDropDownIcon,
 	ArrowRight as ArrowRightIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DropdownBox from "../../styledComponents/Dropdown";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
 
@@ -87,7 +86,17 @@ const Facilities = () => {
 	const [open, setOpen] = useState(false);
 	const [expanded, setExpanded] = useState({});
 	const [search, setSearch] = useState("");
+	const [currentFacility, setCurrentFacility] = useState("Facilities");
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	useEffect(() => {
+		if (location.pathname === "/dubai") {
+			setCurrentFacility("Facilities");
+			setOpen(false); // Reset open state
+			setExpanded({}); // Reset expanded state
+		}
+	}, [location.pathname]);
 
 	const handleExpand = (key) => {
 		setExpanded((prev) => ({
@@ -98,6 +107,12 @@ const Facilities = () => {
 
 	const handleSearchChange = (event) => {
 		setSearch(event.target.value);
+	};
+
+	const handleFacilityClick = (facility) => {
+		setCurrentFacility(facility.text);
+		navigate(facility.path);
+		handleExpand(facility.text);
 	};
 
 	const renderSubSpaceItems = (items, level = 3) => {
@@ -293,10 +308,7 @@ const Facilities = () => {
 								},
 								textAlign: "left",
 							}}
-							onClick={() => {
-								navigate(facility.path);
-								handleExpand(facility.text);
-							}}
+							onClick={() => handleFacilityClick(facility)}
 						>
 							{expanded[facility.text] ? (
 								<ArrowDropDownIcon />
@@ -372,9 +384,10 @@ const Facilities = () => {
 					sx={{
 						ml: 1,
 						color: open ? theme.palette.primary.main : "inherit",
+						fontWeight: 700,
 					}}
 				>
-					Facilities
+					{currentFacility}
 				</Typography>
 			</Box>
 			<DropdownBoxContainer open={open}>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	MenuItem,
 	ListItemIcon,
@@ -12,6 +12,7 @@ import { Menu as MenuIcon } from "@mui/icons-material";
 import { styled } from "@mui/system";
 import DropdownBox from "../../styledComponents/Dropdown";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
+import { useLocation } from "react-router-dom";
 
 const menuItems = [
 	{
@@ -56,6 +57,14 @@ export default function Viewer() {
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
 	const [selected, setSelected] = useState({});
+	const location = useLocation();
+
+	useEffect(() => {
+		if (location.pathname === "/dubai") {
+			setSelected({});
+			setOpen(false);
+		}
+	}, [location.pathname]);
 
 	const handleClick = () => {
 		setOpen(!open);
@@ -112,7 +121,7 @@ export default function Viewer() {
 				>
 					<MenuIcon />
 				</Box>
-				<Typography variant="body1" sx={{ ml: 1 }}>
+				<Typography variant="body1" sx={{ ml: 1, fontWeight: 700 }}>
 					3D Viewer
 				</Typography>
 			</Box>
