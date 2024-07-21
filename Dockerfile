@@ -6,10 +6,6 @@ COPY package*.json ./
 
 RUN npm ci
 
-COPY .deployment/script ./script
-
-RUN ./script/post_install.sh
-
 COPY ./ ./
 
 RUN npm run build
