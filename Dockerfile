@@ -3,15 +3,12 @@ FROM node:18.16.0-alpine3.17 as builder
 WORKDIR /usr/app
 
 COPY package*.json ./
-COPY tsconfig.json ./
 
 RUN npm ci
 
 COPY .deployment/script ./script
 
 RUN ./script/post_install.sh
-
-COPY ./.env ./.env
 
 COPY ./ ./
 
