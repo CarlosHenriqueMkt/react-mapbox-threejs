@@ -4,6 +4,7 @@ import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { pointsData } from "../../data/mapbox";
+import { Box } from "@mui/material";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
@@ -89,20 +90,15 @@ export default function Dubai() {
 	};
 
 	return (
-		<div
-			style={{
-				position: "relative",
+		<Box
+			ref={mapContainerRef}
+			sx={{
+				position: "fixed",
+				top: 0,
+				bottom: 0,
+				width: "100vw",
+				height: "100vh",
 			}}
-		>
-			<div
-				ref={mapContainerRef}
-				style={{
-					position: "fixed",
-					top: 0,
-					bottom: 0,
-					width: "100%",
-				}}
-			></div>
-		</div>
+		/>
 	);
 }

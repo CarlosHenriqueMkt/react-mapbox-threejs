@@ -92,7 +92,7 @@ export default function ButtonTopCityInfo() {
 							width: "240px",
 							justifyContent: "space-between",
 							alignItems: "center",
-							padding: "16px",
+							padding: "8px 16px",
 							margin: "4px 0",
 							borderRadius: "8px",
 							boxShadow: 3,
