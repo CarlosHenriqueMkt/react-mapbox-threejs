@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: virtu-x-frontend-ingress
+  namespace: virtu-x-ns
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "server: hide";
+      more_set_headers Referrer-Policy "no-referrer";
+      more_set_headers "X-Content-Type-Options: nosniff";
+      more_set_headers "X-Frame-Options: DENY";
+      more_set_headers "X-Xss-Protection: 0";
+      more_set_headers "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload";
+      more_set_headers "Cross-Origin-Resource-Policy: same-site";
+
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - dev.virtu-x.io
+      secretName: dev.virtu-x.io-tls-secret
+  rules:
+    - host: dev.virtu-x.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: virtu-x-frontend
+                port:
+                  number: 5005

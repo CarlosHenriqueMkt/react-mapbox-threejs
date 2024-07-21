@@ -1,0 +1,36 @@
+image: atlassian/default-image:3
+options:
+  docker: true
+  size: 2x
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Build And Push To Docker Hub
+          script:
+            - IMAGE_NAME=$BITBUCKET_REPO_SLUG
+            - echo "${VITE_API_BASE_URL}" >> .env
+            - cat .env
+            - docker build . --file Dockerfile --tag ${IMAGE_NAME}
+            - docker save ${IMAGE_NAME} --output "${IMAGE_NAME}.tar"
+            - echo ${DOCKERHUB_PASSWORD} | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+            - IMAGE_NAME=$BITBUCKET_REPO_SLUG
+            - docker load --input "${IMAGE_NAME}.tar"
+            - VERSION="${BITBUCKET_BRANCH}"
+            - IMAGE=${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}
+            - docker tag "${IMAGE_NAME}" "${IMAGE}:${VERSION}"
+            - echo "${IMAGE}:${VERSION}"
+            - docker push "${IMAGE}:${VERSION}"
+          services:
+            - docker
+      - step:
+          name: Deploy To Cluster
+          image: atlassian/pipelines-kubectl
+          script:
+            - echo $KUBE_CONFIG_STAGE | base64 -d > kubeconfig.yml
+            - kubectl --kubeconfig=kubeconfig.yml delete  -f .deployment/k8s/prod -R || true
+            - kubectl --kubeconfig=kubeconfig.yml apply   -f .deployment/k8s/prod -R
+definitions:
+  services:
+    docker:
+      memory: 4096
