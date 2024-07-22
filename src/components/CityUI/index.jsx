@@ -7,9 +7,11 @@ export default function CityUI() {
 	return (
 		<>
 			<Box
+				width="100%"
+				display="flex"
+				flexDirection="column"
 				position="absolute"
 				zIndex="999"
-				sx={{ display: "flex", flexDirection: "column" }}
 			>
 				<CityHeader />
 				<CityFilters />

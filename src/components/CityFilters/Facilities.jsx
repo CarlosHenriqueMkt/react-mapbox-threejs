@@ -345,7 +345,7 @@ const Facilities = () => {
 			sx={{
 				position: "absolute",
 				top: 120,
-				left: 350,
+				left: 315,
 				width: "350px",
 				paddingInline: "16px",
 				boxShadow: 3,

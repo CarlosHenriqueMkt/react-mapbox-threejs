@@ -22,7 +22,7 @@ export default function ButtonsBottomDubai() {
 				gap: 1,
 				position: "absolute",
 				top: 600,
-				right: 35,
+				right: 20,
 				backgroundColor: "transparent",
 				overflow: "hidden",
 			}}

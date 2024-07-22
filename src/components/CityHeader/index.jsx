@@ -25,7 +25,7 @@ export default function CityHeader() {
 	return (
 		<Box
 			sx={{
-				width: "100vw",
+				width: "100%",
 				display: "flex",
 				alignItem: "center",
 				justifyContent: "center",
@@ -36,7 +36,7 @@ export default function CityHeader() {
 				sx={{
 					backgroundColor: "white",
 					boxShadow: 3,
-					width: "98%",
+					width: "100%",
 					height: "80px",
 					borderRadius: "16px",
 				}}

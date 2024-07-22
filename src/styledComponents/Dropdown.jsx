@@ -17,17 +17,17 @@ const DropdownBox = styled(Box, {
 		paddingBottom: "8px",
 	},
 	"&::-webkit-scrollbar-track": {
-		backgroundColor: "transparent",
+		backgroundColor: "#F4F2FF",
 	},
 	"&::-webkit-scrollbar-thumb": {
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: "#BEAEFF",
 		borderRadius: "8px",
 	},
 	"&::-webkit-scrollbar-thumb:hover": {
 		backgroundColor: theme.palette.primary.dark,
 	},
 	"&::-webkit-scrollbar-corner": {
-		backgroundColor: "transparent",
+		backgroundColor: "#F4F2FF",
 	},
 }));
 

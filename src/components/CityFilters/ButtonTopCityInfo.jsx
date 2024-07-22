@@ -39,7 +39,7 @@ export default function ButtonTopCityInfo() {
 				gap: 2,
 				position: "absolute",
 				top: 120,
-				right: 35,
+				right: 20,
 				backgroundColor: "transparent",
 				overflow: "hidden",
 			}}

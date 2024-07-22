@@ -1,15 +1,17 @@
-import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { pointsData } from "../../data/mapbox";
 import { Box } from "@mui/material";
+import FacilityDrawer from "../../components/FacilityDrawer";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
-	const navigate = useNavigate();
+
+	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [facilityData, setFacilityData] = useState(null);
 
 	useEffect(() => {
 		if (!mapboxglSupported.supported()) {
@@ -84,21 +86,33 @@ export default function Dubai() {
 				.addTo(map);
 
 			marker.getElement().addEventListener("click", () => {
-				navigate(`/dubai/${point.path}`);
+				setFacilityData(point);
+				setDrawerOpen(true);
 			});
 		});
 	};
 
+	const handleDrawerClose = () => {
+		setDrawerOpen(false);
+	};
+
 	return (
-		<Box
-			ref={mapContainerRef}
-			sx={{
-				position: "fixed",
-				top: 0,
-				bottom: 0,
-				width: "100vw",
-				height: "100vh",
-			}}
-		/>
+		<React.Fragment>
+			<Box
+				ref={mapContainerRef}
+				sx={{
+					position: "fixed",
+					top: 0,
+					bottom: 0,
+					width: "100%",
+					height: "100%",
+				}}
+			/>
+			<FacilityDrawer
+				open={drawerOpen}
+				onClose={handleDrawerClose}
+				facilityData={facilityData}
+			/>
+		</React.Fragment>
 	);
 }

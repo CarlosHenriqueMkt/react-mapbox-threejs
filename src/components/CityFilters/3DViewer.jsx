@@ -83,7 +83,7 @@ export default function Viewer() {
 			sx={{
 				position: "absolute",
 				top: 120,
-				left: 35,
+				left: 20,
 				width: "274px",
 				paddingInline: "16px",
 				boxShadow: 3,

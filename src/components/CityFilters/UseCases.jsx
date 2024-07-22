@@ -1,4 +1,3 @@
-// UseCases.js
 import React, { useState, useEffect } from "react";
 import {
 	MenuItem,
@@ -162,24 +161,38 @@ export default function UseCases() {
 	};
 
 	const renderSubItems = (subItems, level = 2) => {
+		const [checkedState, setCheckedState] = useState(
+			subItems.map(() => false)
+		);
+
+		const handleItemClick = (index, action) => {
+			setCheckedState((prevState) =>
+				prevState.map((item, idx) => (idx === index ? !item : item))
+			);
+			action();
+		};
+
 		return subItems.map((subItem, index) => (
 			<Box
 				key={index}
 				sx={{
 					display: "flex",
 					alignItems: "center",
-					pl: `${level * 16}px`,
+					pl: `${level * 18}px`,
 				}}
 			>
-				<Checkbox onClick={subItem.action} />
+				<Checkbox
+					checked={checkedState[index]}
+					onClick={() => handleItemClick(index, subItem.action)}
+				/>
 				<Button
 					sx={{
 						display: "flex",
-						alignItems: "center",
-						width: "100%",
+						justifyContent: "flex-start",
+						textAlign: "left",
 						color: theme.palette.text.secondary,
 					}}
-					onClick={subItem.action}
+					onClick={() => handleItemClick(index, subItem.action)}
 				>
 					{subItem.name}
 				</Button>
@@ -265,7 +278,7 @@ export default function UseCases() {
 			sx={{
 				position: "absolute",
 				top: 120,
-				left: 742,
+				left: 685,
 				width: "350px",
 				paddingInline: "16px",
 				paddingBottom: open ? "16px" : 0,
