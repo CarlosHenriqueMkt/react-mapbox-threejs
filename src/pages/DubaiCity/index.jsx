@@ -2,15 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "./dubai.css";
-import CityDrawer from "../../components/CityDrawer";
 import { pointsData } from "../../data/mapbox";
+import { Box } from "@mui/material";
+import FacilityDrawer from "../../components/FacilityDrawer";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
+
 	const [drawerOpen, setDrawerOpen] = useState(false);
-	const [drawerContent, setDrawerContent] = useState(null);
+	const [facilityData, setFacilityData] = useState(null);
 
 	useEffect(() => {
 		if (!mapboxglSupported.supported()) {
@@ -34,7 +35,6 @@ export default function Dubai() {
 		});
 
 		mapRef.current.on("load", () => {
-			// Check if the layer already exists
 			if (!mapRef.current.getLayer("add-3d-buildings")) {
 				const layers = mapRef.current.getStyle().layers;
 				const labelLayerId = layers.find(
@@ -86,79 +86,33 @@ export default function Dubai() {
 				.addTo(map);
 
 			marker.getElement().addEventListener("click", () => {
-				map.flyTo({
-					center: point.coordinates,
-					zoom: 17,
-					speed: 1.2,
-					curve: 1,
-					easing(t) {
-						return t;
-					},
-				});
-				setDrawerContent(
-					<div>
-						<h2>{point.description}</h2>
-						<div className="drawer-item">
-							<span className="drawer-item-label">Alarms</span>
-							<span className="drawer-item-value">
-								{point.alarms}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">
-								Work Orders
-							</span>
-							<span className="drawer-item-value">
-								{point.workOrders}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">
-								Active WOs
-							</span>
-							<span className="drawer-item-value">
-								{point.activeWO}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">
-								Closed WOs
-							</span>
-							<span className="drawer-item-value">
-								{point.closedWO}
-							</span>
-						</div>
-						<div className="drawer-item">
-							<span className="drawer-item-label">SLA Met</span>
-							<span className="drawer-item-value">
-								{point.slaMet}
-							</span>
-						</div>
-					</div>
-				);
+				setFacilityData(point);
 				setDrawerOpen(true);
 			});
 		});
 	};
 
+	const handleDrawerClose = () => {
+		setDrawerOpen(false);
+	};
+
 	return (
-		<>
-			<div style={{ position: "relative", height: "100vh" }}>
-				<div
-					ref={mapContainerRef}
-					style={{
-						position: "absolute",
-						top: 0,
-						bottom: 0,
-						width: "100%",
-					}}
-				></div>
-				<CityDrawer
-					drawerOpen={drawerOpen}
-					onClose={() => setDrawerOpen(false)}
-					content={drawerContent}
-				/>
-			</div>
-		</>
+		<React.Fragment>
+			<Box
+				ref={mapContainerRef}
+				sx={{
+					position: "fixed",
+					top: 0,
+					bottom: 0,
+					width: "100%",
+					height: "100%",
+				}}
+			/>
+			<FacilityDrawer
+				open={drawerOpen}
+				onClose={handleDrawerClose}
+				facilityData={facilityData}
+			/>
+		</React.Fragment>
 	);
 }
