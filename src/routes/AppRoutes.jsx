@@ -7,6 +7,7 @@ import Dubai from "../pages/DubaiCity";
 import Scene1 from "../pages/SceneOne";
 import Scene2 from "../pages/SceneTwo";
 import CityUI from "../components/CityUI";
+import FacilityId from "../components/facilityId";
 
 const AppRoutes = () => {
 	return (
@@ -25,7 +26,7 @@ const DubaiWithUI = () => (
 			<Route path="/" element={<Dubai />} />
 			<Route path="/scene1" element={<Scene1 />} />
 			<Route path="/scene2" element={<Scene2 />} />
-			{/* Adicione mais rotas conforme necessário */}
+			<Route path="/:facilityId" element={<FacilityId />} />
 		</Routes>
 	</>
 );
