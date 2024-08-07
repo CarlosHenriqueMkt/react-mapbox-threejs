@@ -5,7 +5,6 @@ import LoginPage from "../pages/Login";
 import NotFound from "../pages/NotFound";
 import Dubai from "../pages/DubaiCity";
 import Scene1 from "../pages/SceneOne";
-import Scene2 from "../pages/SceneTwo";
 import CityUI from "../components/CityUI";
 import FacilityId from "../components/facilityId";
 
@@ -25,7 +24,6 @@ const DubaiWithUI = () => (
 		<Routes>
 			<Route path="/" element={<Dubai />} />
 			<Route path="/scene1" element={<Scene1 />} />
-			<Route path="/scene2" element={<Scene2 />} />
 			<Route path="/:facilityId" element={<FacilityId />} />
 		</Routes>
 	</>

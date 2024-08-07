@@ -13,6 +13,9 @@ const theme = createTheme({
 		background: {
 			main: "#FEFEFF",
 		},
+		link: {
+			main: "#2377D1",
+		},
 	},
 });
 
