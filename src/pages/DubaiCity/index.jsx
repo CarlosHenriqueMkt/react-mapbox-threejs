@@ -5,6 +5,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { pointsData } from "../../data/mapbox";
 import { Box } from "@mui/material";
 import FacilityDrawer from "../../components/FacilityDrawer";
+import PopupAlert from "../../components/PopupAlert";
+import PopupHandler from "../../components/PopUpHandler";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
@@ -113,6 +115,7 @@ export default function Dubai() {
 				onClose={handleDrawerClose}
 				facilityData={facilityData}
 			/>
+			<PopupHandler />
 		</React.Fragment>
 	);
 }
