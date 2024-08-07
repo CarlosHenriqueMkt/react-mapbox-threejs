@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { alerts } from "../../data/alerts";
 import { Box, Button } from "@mui/material";
+import Scene1 from "../../pages/SceneOne";
 
 export default function FacilityId() {
 	const { facilityId } = useParams();
@@ -22,7 +23,7 @@ export default function FacilityId() {
 			>
 				Facility not found
 				<Button onClick={() => navigate("/dubai")}>
-					Voltar para Dubai
+					Back to Dubai
 				</Button>
 			</Box>
 		);
@@ -35,7 +36,7 @@ export default function FacilityId() {
 				height: "100vh",
 				display: "flex",
 				flexDirection: "column",
-				alignItems: "center",
+				alignItems: "flex-start",
 				justifyContent: "center",
 			}}
 		>
@@ -44,6 +45,9 @@ export default function FacilityId() {
 			<p>{alert.location}</p>
 			<p>{alert.alarmType}</p>
 			<p>{alert.time}</p>
+			<Box position="absolute">
+				<Scene1 />
+			</Box>
 		</Box>
 	);
 }

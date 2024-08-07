@@ -1,12 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button, IconButton } from "@mui/material";
+import { Box, Typography, Button, IconButton, useTheme } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import usePopup from "../../hooks/usePopup";
 import useVisibility from "../../hooks/useVisibility";
 
 const PopupAlert = ({ alert }) => {
+	const theme = useTheme();
 	const [isOpen, closePopup] = usePopup();
 	const [elementRef, intersectionRatio] = useVisibility();
 	const navigate = useNavigate();
@@ -52,8 +53,27 @@ const PopupAlert = ({ alert }) => {
 				</IconButton>
 			</Box>
 			<Typography variant="body2" sx={{ mt: 1 }}>
-				Attention needed in <strong>{alert.building}</strong>:{" "}
-				{alert.type} has been detected in {alert.location}.
+				Attention needed in{" "}
+				<Button
+					sx={{
+						background: "transparent",
+						color: theme.palette.link.main,
+						padding: 0,
+						margin: 0,
+						textTransform: "none",
+						textDecoration: "underline",
+						"&:hover": {
+							background: "transparent",
+						},
+						"&::first-letter": {
+							textTransform: "uppercase",
+						},
+					}}
+					onClick={handleViewFacility}
+				>
+					{alert.building}
+				</Button>
+				: {alert.type} has been detected in {alert.location}.
 			</Typography>
 			<Button
 				variant="contained"
