@@ -5,8 +5,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { pointsData } from "../../data/mapbox";
 import { Box } from "@mui/material";
 import FacilityDrawer from "../../components/FacilityDrawer";
-import PopupAlert from "../../components/PopupAlert";
 import PopupHandler from "../../components/PopUpHandler";
+import ButtonsBottomDubai from "../../components/Buttons/HowToUse";
+import ButtonTopCityInfo from "../../components/Buttons/ButtonTopCityInfo";
+import ButtonsTopFacility from "../../components/Buttons/ButtonsTopFacility";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
@@ -116,6 +118,8 @@ export default function Dubai() {
 				facilityData={facilityData}
 			/>
 			<PopupHandler />
+			<ButtonTopCityInfo />
+			<ButtonsBottomDubai />
 		</React.Fragment>
 	);
 }

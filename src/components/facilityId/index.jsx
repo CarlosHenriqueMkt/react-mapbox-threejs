@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { alerts } from "../../data/alerts";
 import { Box, Button } from "@mui/material";
 import Scene1 from "../../pages/SceneOne";
+import ButtonsTopFacility from "../Buttons/ButtonsTopFacility";
+import ButtonsBottomDubai from "../Buttons/HowToUse";
 
 export default function FacilityId() {
 	const { facilityId } = useParams();
@@ -48,6 +50,8 @@ export default function FacilityId() {
 			<Box position="absolute">
 				<Scene1 />
 			</Box>
+			<ButtonsTopFacility />
+			<ButtonsBottomDubai />
 		</Box>
 	);
 }

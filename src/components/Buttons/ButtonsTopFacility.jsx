@@ -21,7 +21,7 @@ export default function ButtonsTopFacility() {
 				gap: 2,
 				position: "absolute",
 				top: 120,
-				right: 35,
+				right: 20,
 				backgroundColor: "transparent",
 				overflow: "hidden",
 			}}
@@ -61,7 +61,7 @@ export default function ButtonsTopFacility() {
 					/>
 				</Box>
 			</Button>
-			<Button
+			{/* <Button
 				onClick={handleClickCube}
 				sx={{
 					borderRadius: "12px",
@@ -95,7 +95,7 @@ export default function ButtonsTopFacility() {
 						style={{ width: "24px", height: "24px" }}
 					/>
 				</Box>
-			</Button>
+			</Button> */}
 		</Box>
 	);
 }

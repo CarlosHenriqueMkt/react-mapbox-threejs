@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, useTheme, styled, Button } from "@mui/material";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const DropdownBox = styled(Box)(({ theme }) => ({
 	display: "flex",
@@ -15,11 +16,11 @@ const DropdownBox = styled(Box)(({ theme }) => ({
 }));
 
 const menuItems = [
-	{ text: "Alarms", value: 150 },
-	{ text: "Work Orders", value: 47 },
-	{ text: "Active WOs", value: 10 },
-	{ text: "Closed WOs", value: 37 },
-	{ text: "SLA Met", value: "70%" },
+	{ text: "Alarms", value: 1500, color: "#2377D1" },
+	{ text: "Work Orders", value: 47, color: "#7932FF" },
+	{ text: "Active WOs", value: 10, color: "#79B473" },
+	{ text: "Closed WOs", value: 37, color: "#969696" },
+	{ text: "SLA Met", value: "70%", color: "#2377D1" },
 ];
 
 export default function ButtonTopCityInfo() {
@@ -84,41 +85,62 @@ export default function ButtonTopCityInfo() {
 				</Box>
 			</Button>
 			<DropdownBox className={!open ? "closed" : ""}>
-				{menuItems.map((item, index) => (
-					<Box
-						key={index}
-						sx={{
-							display: "flex",
-							width: "240px",
-							justifyContent: "space-between",
-							alignItems: "center",
-							padding: "8px 16px",
-							margin: "4px 0",
-							borderRadius: "8px",
-							boxShadow: 3,
-							backgroundColor: theme.palette.background.main,
-						}}
-					>
-						<Typography variant="body1" sx={{ fontWeight: 700 }}>
-							{item.text}
-						</Typography>
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						gap: theme.spacing(2),
+						padding: theme.spacing(1),
+						borderRadius: "8px",
+						boxShadow: 3,
+						backgroundColor: theme.palette.background.main,
+					}}
+				>
+					{menuItems.map((item, index) => (
 						<Box
+							key={index}
 							sx={{
-								color: theme.palette.primary.main,
 								backgroundColor: theme.palette.primary.light,
-								padding: "8px 16px",
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "flex-start",
+								justifyContent: "space-between",
 								borderRadius: "8px",
+								padding: theme.spacing(1),
 							}}
 						>
 							<Typography
-								variant="body1"
-								sx={{ fontWeight: 700 }}
+								variant="h2"
+								sx={{
+									color: theme.palette.text.medium,
+									fontSize: "12px",
+									fontWeight: 700,
+								}}
 							>
-								{item.value}
+								{item.text}
 							</Typography>
+							<Box
+								sx={{
+									color: theme.palette.text.black,
+									borderRadius: "8px",
+								}}
+							>
+								<Typography
+									variant="body1"
+									sx={{ fontWeight: 700 }}
+								>
+									{item.value}
+								</Typography>
+							</Box>
+							<CircleIcon
+								sx={{
+									color: item.color,
+									fontSize: "8px",
+								}}
+							/>
 						</Box>
-					</Box>
-				))}
+					))}
+				</Box>
 			</DropdownBox>
 		</Box>
 	);
