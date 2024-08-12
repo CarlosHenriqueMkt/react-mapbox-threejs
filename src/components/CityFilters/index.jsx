@@ -1,34 +1,18 @@
-// CityFilters.js
 import React from "react";
-import { useLocation } from "react-router-dom";
 import Viewer from "./3DViewer";
 import Facilities from "./Facilities";
-import UseCases from "./UseCases";
-import ButtonsTopFacility from "./ButtonsTopFacility";
-import ButtonTopCityInfo from "./ButtonTopCityInfo";
-import ButtonsBottomFacility from "./ButtonsBottomFacility";
-import ButtonsBottomDubai from "./ButtonsBottomDubai";
+import SolutionsScenarios from "./SolutionsScenarios";
+import { useLocation } from "react-router-dom";
+import Alarms from "../Buttons/Alarms";
 
 export default function CityFilters() {
 	const location = useLocation();
-
-	const renderTopButtons = () => {
+	const renderButtons = () => {
 		if (location.pathname.startsWith("/dubai")) {
 			return location.pathname.match(/\/dubai\/[^/]+$/) ? (
-				<ButtonsTopFacility />
+				<SolutionsScenarios />
 			) : (
-				<ButtonTopCityInfo />
-			);
-		}
-		return null;
-	};
-
-	const renderBottomButtons = () => {
-		if (location.pathname.startsWith("/dubai")) {
-			return location.pathname.match(/\/dubai\/[^/]+$/) ? (
-				<ButtonsBottomFacility />
-			) : (
-				<ButtonsBottomDubai />
+				<Alarms />
 			);
 		}
 		return null;
@@ -38,9 +22,7 @@ export default function CityFilters() {
 		<>
 			<Viewer />
 			<Facilities />
-			<UseCases />
-			{renderTopButtons()}
-			{renderBottomButtons()}
+			{renderButtons()}
 		</>
 	);
 }

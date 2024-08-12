@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-	MenuItem,
 	ListItemIcon,
 	ListItemText,
 	Box,
@@ -18,7 +17,6 @@ import {
 	ArrowDropDown as ArrowDropDownIcon,
 	ArrowRight as ArrowRightIcon,
 } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
 
 const items = [
@@ -129,25 +127,11 @@ const items = [
 	},
 ];
 
-export default function UseCases() {
+export default function SolutionsScenarios() {
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
 	const [expanded, setExpanded] = useState({});
 	const [search, setSearch] = useState("");
-	const location = useLocation();
-	const [title, setTitle] = useState("Use Cases");
-
-	useEffect(() => {
-		if (location.pathname === "/dubai") {
-			setTitle("Use Cases");
-			setOpen(false);
-			setExpanded({});
-		} else if (location.pathname.match(/\/dubai\/[^/]+$/)) {
-			setTitle("Solutions & Scenarios");
-		} else {
-			setTitle("Use Cases");
-		}
-	}, [location]);
 
 	const handleExpand = (key) => {
 		setExpanded((prev) => ({
@@ -321,7 +305,7 @@ export default function UseCases() {
 						fontWeight: 700,
 					}}
 				>
-					{title}
+					Solutions & Scenarios
 				</Typography>
 			</Box>
 			<DropdownBoxContainer open={open}>

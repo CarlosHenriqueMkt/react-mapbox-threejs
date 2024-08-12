@@ -24,7 +24,7 @@ import DropdownBoxContainer from "../../styledComponents/Dropdown";
 const facilities = [
 	{
 		text: "Facility Name 1",
-		path: "/dubai/scene1",
+		route: "burj-mohammed",
 		locations: [
 			{
 				text: "Locations 1",
@@ -71,12 +71,12 @@ const facilities = [
 	},
 	{
 		text: "Facility Name 2",
-		path: "/dubai/facility-name-2",
+		route: "al-hoda-tower",
 		locations: [],
 	},
 	{
 		text: "Facility Name 3",
-		path: "/dubai/facility-name-3",
+		route: "al-hoda-tower",
 		locations: [],
 	},
 ];
@@ -111,7 +111,7 @@ const Facilities = () => {
 
 	const handleFacilityClick = (facility) => {
 		setCurrentFacility(facility.text);
-		navigate(facility.path);
+		navigate(`/dubai/${facility.route}`);
 		handleExpand(facility.text);
 	};
 
@@ -391,7 +391,7 @@ const Facilities = () => {
 				</Typography>
 			</Box>
 			<DropdownBoxContainer open={open}>
-				<Box sx={{ padding: theme.spacing(2) }}>
+				<Box sx={{ padding: theme.spacing(1) }}>
 					<TextField
 						fullWidth
 						variant="outlined"
