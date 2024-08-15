@@ -9,6 +9,7 @@ import PopupHandler from "../../components/PopUpHandler";
 import ButtonsBottomDubai from "../../components/Buttons/HowToUse";
 import ButtonTopCityInfo from "../../components/Buttons/ButtonTopCityInfo";
 import ButtonsTopFacility from "../../components/Buttons/ButtonsTopFacility";
+import CityUI from "../../components/CityUI";
 
 export default function Dubai() {
 	const mapContainerRef = useRef();
@@ -102,6 +103,7 @@ export default function Dubai() {
 
 	return (
 		<React.Fragment>
+			<CityUI />
 			<Box
 				ref={mapContainerRef}
 				sx={{

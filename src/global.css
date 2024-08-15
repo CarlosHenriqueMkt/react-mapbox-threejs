@@ -1,0 +1,48 @@
+.tool-tip {
+	position: absolute;
+	opacity: 0;
+	transform: translate(-50%, -105%);
+	pointer-events: none;
+	background: rgba(255, 255, 255, 0.74);
+	width: 210px;
+	height: 80px;
+	border-radius: 6px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: black;
+	backdrop-filter: blur(10px);
+}
+
+.tool-tip.visible {
+	opacity: 1;
+}
+
+.tool-tip p span {
+	font-weight: 100;
+	font-size: 1em;
+}
+
+.tool-tip p {
+	padding: 0;
+	font-weight: bold;
+	text-align: center;
+	margin: 0;
+	line-height: 1.2em;
+}
+
+.tool-tip small {
+	font-size: 0.8em;
+	opacity: 0.3;
+	margin-top: 10px;
+}
+
+canvas {
+	touch-action: none;
+}
+
+#container {
+	overflow: hidden;
+	cursor: grab;
+}
