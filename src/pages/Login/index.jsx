@@ -59,8 +59,8 @@ export default function LoginPage() {
 				}}
 				className="imageWrapper"
 			>
-				<img src="logo.png" alt="Virtu-X" />
-				<img src="cityscape.png" alt="Cityscape" />
+				<img src="/logo.png" alt="Virtu-X" />
+				<img src="/cityscape.png" alt="Cityscape" />
 			</Box>
 			<Box
 				sx={{

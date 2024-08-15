@@ -1,12 +1,10 @@
-// AppRoutes.js
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "../pages/Login";
 import NotFound from "../pages/NotFound";
 import Dubai from "../pages/DubaiCity";
-import Scene1 from "../pages/SceneOne";
 import CityUI from "../components/CityUI";
-import FacilityId from "../components/facilityId";
+import FacilityView from "../components/FacilityView";
 
 const AppRoutes = () => {
 	return (
@@ -18,15 +16,36 @@ const AppRoutes = () => {
 	);
 };
 
-const DubaiWithUI = () => (
-	<>
-		<CityUI />
-		<Routes>
-			<Route path="/" element={<Dubai />} />
-			<Route path="/scene1" element={<Scene1 />} />
-			<Route path="/:facilityId" element={<FacilityId />} />
-		</Routes>
-	</>
-);
+const DubaiWithUI = () => {
+	const location = useLocation();
+
+	useEffect(() => {
+		const facilityIdMatch = location.pathname.match(/^\/dubai\/[^/]+$/);
+
+		if (facilityIdMatch) {
+			// Recupera a última rota que foi recarregada
+			const lastReloadedPath = sessionStorage.getItem("lastReloadedPath");
+
+			// Verifica se a rota atual é diferente da última recarregada
+			if (lastReloadedPath !== location.pathname) {
+				// Armazena a rota atual
+				sessionStorage.setItem("lastReloadedPath", location.pathname);
+				window.location.reload();
+			}
+		} else {
+			// Remove a informação do sessionStorage ao sair da rota específica
+			sessionStorage.removeItem("lastReloadedPath");
+		}
+	}, [location.pathname]);
+
+	return (
+		<>
+			<Routes>
+				<Route path="/" element={<Dubai />} />
+				<Route path="/:facilityId" element={<FacilityView />} />
+			</Routes>
+		</>
+	);
+};
 
 export default AppRoutes;

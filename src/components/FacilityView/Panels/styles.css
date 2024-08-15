@@ -1,0 +1,160 @@
+.panel {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 90%;
+  height: 100px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  background-color: rgba(104, 104, 104, 0.209);
+  backdrop-filter: blur(35px) saturate(200%);
+  border-radius: 8px;
+  transform: translateX(-50%);
+  color: rgba(4, 37, 28, 0.699);
+}
+
+.close-button-panel {
+  position: absolute;
+  top: 50%;
+  right: 40px;
+  cursor: pointer;
+  width: 80px;
+  height: 40px;
+  transform: translateY(-50%);
+  pointer-events: visible;
+  border: 1px solid rgba(255, 255, 255, 0.274);
+  color: rgba(255, 255, 255, 0.712);
+  background-color: rgba(0, 0, 0, 0.377);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  transition: all 0.8s ease-in-out;
+}
+
+.close-button-panel:hover {
+  transform: translateY(-50%) scale(1.1);
+  background-color: rgba(38, 78, 112, 0.332);
+}
+
+.panel.quality {
+  width: 440px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  padding: 40px;
+  height: fit-content;
+  display: flex;
+  z-index: 1000;
+  gap: 40px;
+}
+
+.panel.quality ul {
+  margin-top: 20px;
+  list-style: none;
+  padding-inline-start: 0;
+  opacity: 0.6;
+  display: flex;
+  font-size: 12px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+
+.panel.quality ul li {
+  cursor: pointer;
+  line-height: 1.8em;
+  opacity: 0.3;
+}
+
+.panel.quality .quality-options label {
+  display: grid;
+  grid-template-columns: 1.2em auto;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.panel.quality label input[type='radio'] {
+  display: grid;
+  place-content: center;
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  font: inherit;
+  color: black;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid white;
+  border-radius: 50%;
+  transform: translateY(0.075em);
+}
+
+.panel.quality label input[type='radio']::before {
+  content: '';
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em white;
+}
+
+.panel.quality label input[type='radio']:checked::before {
+  transform: scale(1);
+}
+
+.panel.quality label input[type='radio']:focus {
+  outline: max(2px, 0.15em) solid white;
+  outline-offset: max(2px, 0.15em);
+}
+
+.panel.quality .quality-options {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.panel.quality .button-white {
+  border: none;
+  border-radius: 50px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.panel.quality .button-white:hover {
+  background-color: rgba(230, 230, 230, 0.167);
+  color: white;
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, 1);
+}
+
+.background-quality {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  pointer-events: all;
+  overflow: hidden;
+  background: rgba(18, 8, 34, 0.789);
+}
+
+.panel.quality h2 {
+  font-size: 32px;
+  line-height: 1;
+  margin: 0;
+}
+
+.close-quality {
+  position: absolute;
+  top: 40px;
+  right: 20px;
+  width: 40px;
+}

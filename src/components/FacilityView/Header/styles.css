@@ -1,0 +1,77 @@
+header {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	margin: 0;
+	padding: 20px 40px;
+	width: 100%;
+	user-select: none;
+	pointer-events: none;
+	font-weight: lighter;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: row;
+}
+
+.button-close {
+	background: rgba(255, 255, 255, 0.74);
+	color: black;
+	padding: 10px 16px;
+	border-radius: 6px;
+	border: none;
+	font-weight: lighter;
+	font-size: 1em;
+	cursor: pointer;
+	pointer-events: all;
+	margin-left: auto;
+	margin-right: 20px;
+	transition: all 0.2s ease-in-out;
+}
+
+.button-close:hover {
+	transform: scale(1.05);
+	background-color: rgb(255, 255, 255);
+	color: black;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.selected-floor-title {
+	color: rgb(255, 255, 255);
+	padding: 10px 16px;
+	border-radius: 6px;
+	border: none;
+	font-weight: lighter;
+	line-height: 0;
+	margin: 0;
+	font-size: 1.5em;
+	text-shadow: 0 0 20px rgb(0, 0, 0);
+}
+
+.button-header {
+	cursor: pointer;
+	background-repeat: no-repeat;
+	width: 40px;
+	height: 40px;
+	pointer-events: all;
+	border: none;
+	background-color: rgb(255, 255, 255);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	transition: all 0.2s ease-in-out;
+	margin-right: 16px;
+	pointer-events: all;
+}
+
+.button-header img {
+	opacity: 0.6;
+	filter: invert(1);
+}
+
+.button-header:hover {
+	transform: scale(1.1);
+	background-color: rgb(131, 131, 131);
+}
