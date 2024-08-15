@@ -3,7 +3,7 @@ header {
 	bottom: 0;
 	left: 0;
 	margin: 0;
-	padding: 20px 40px;
+	padding: 20px;
 	width: 100%;
 	user-select: none;
 	pointer-events: none;
@@ -62,7 +62,6 @@ header {
 	justify-content: center;
 	border-radius: 8px;
 	transition: all 0.2s ease-in-out;
-	margin-right: 16px;
 	pointer-events: all;
 }
 

@@ -3,7 +3,6 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "../pages/Login";
 import NotFound from "../pages/NotFound";
 import Dubai from "../pages/DubaiCity";
-import CityUI from "../components/CityUI";
 import FacilityView from "../components/FacilityView";
 
 const AppRoutes = () => {
