@@ -18,7 +18,6 @@ import {
 	ArrowRight as ArrowRightIcon,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
-import DropdownBox from "../../styledComponents/Dropdown";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
 
 const facilities = [
@@ -81,9 +80,8 @@ const facilities = [
 	},
 ];
 
-const Facilities = () => {
+export default function Facilities({ open, toggleDropdown }) {
 	const theme = useTheme();
-	const [open, setOpen] = useState(false);
 	const [expanded, setExpanded] = useState({});
 	const [search, setSearch] = useState("");
 	const [currentFacility, setCurrentFacility] = useState("Facilities");
@@ -93,7 +91,6 @@ const Facilities = () => {
 	useEffect(() => {
 		if (location.pathname === "/dubai") {
 			setCurrentFacility("Facilities");
-			setOpen(false); // Reset open state
 			setExpanded({}); // Reset expanded state
 		}
 	}, [location.pathname]);
@@ -343,42 +340,23 @@ const Facilities = () => {
 	return (
 		<Box
 			sx={{
-				position: "absolute",
-				top: 120,
-				left: 315,
-				width: "350px",
 				paddingInline: "16px",
-				boxShadow: 3,
 				borderRadius: "8px",
-				backgroundColor: theme.palette.background.paper,
 				overflow: "hidden",
 			}}
 		>
 			<Box
-				onClick={() => setOpen(!open)}
+				onClick={toggleDropdown}
 				sx={{
 					height: "100%",
 					display: "flex",
 					alignItems: "center",
+					gap: "8px",
 					paddingBlock: "13px",
 					cursor: "pointer",
 					backgroundColor: "transparent",
 				}}
 			>
-				<Box
-					sx={{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						width: "40px",
-						height: "40px",
-						transition: "transform 0.3s ease",
-						transform: open ? "rotate(90deg)" : "rotate(0deg)",
-						color: open ? theme.palette.primary.main : "inherit",
-					}}
-				>
-					<ArrowForwardIosIcon />
-				</Box>
 				<Typography
 					variant="body1"
 					sx={{
@@ -389,6 +367,21 @@ const Facilities = () => {
 				>
 					{currentFacility}
 				</Typography>
+				<Box
+					sx={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						fontSize: "8px",
+						width: "40px",
+						height: "40px",
+						transition: "transform 0.3s ease",
+						transform: open ? "rotate(90deg)" : "rotate(0deg)",
+						color: open ? theme.palette.primary.main : "inherit",
+					}}
+				>
+					<ArrowForwardIosIcon sx={{ fontSize: "12px" }} />
+				</Box>
 			</Box>
 			<DropdownBoxContainer open={open}>
 				<Box sx={{ padding: theme.spacing(1) }}>
@@ -411,6 +404,4 @@ const Facilities = () => {
 			</DropdownBoxContainer>
 		</Box>
 	);
-};
-
-export default Facilities;
+}

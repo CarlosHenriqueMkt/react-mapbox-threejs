@@ -31,7 +31,6 @@ const PopupAlert = ({ alert }) => {
 				p: 2,
 				zIndex: 9999,
 				minWidth: 400,
-				marginBottom: 2,
 				opacity: Math.max(0.5, intersectionRatio),
 				transition: "opacity 0.3s ease-in-out",
 			}}
@@ -73,16 +72,7 @@ const PopupAlert = ({ alert }) => {
 				>
 					{alert.building}
 				</Button>
-				: {alert.type} has been detected in {alert.location}.
 			</Typography>
-			<Button
-				variant="contained"
-				color="error"
-				sx={{ width: "fit-content", alignSelf: "flex-end", mt: 2 }}
-				onClick={handleViewFacility}
-			>
-				View Facility
-			</Button>
 		</Box>
 	);
 };

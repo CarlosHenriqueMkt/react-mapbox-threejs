@@ -127,9 +127,8 @@ const items = [
 	},
 ];
 
-export default function SolutionsScenarios() {
+export default function SolutionsScenarios({ open, toggleDropdown }) {
 	const theme = useTheme();
-	const [open, setOpen] = useState(false);
 	const [expanded, setExpanded] = useState({});
 	const [search, setSearch] = useState("");
 
@@ -260,20 +259,13 @@ export default function SolutionsScenarios() {
 	return (
 		<Box
 			sx={{
-				position: "absolute",
-				top: 120,
-				left: 685,
-				width: "350px",
 				paddingInline: "16px",
-				paddingBottom: open ? "16px" : 0,
-				boxShadow: 3,
 				borderRadius: "8px",
-				backgroundColor: theme.palette.background.paper,
 				overflow: "hidden",
 			}}
 		>
 			<Box
-				onClick={() => setOpen(!open)}
+				onClick={toggleDropdown}
 				sx={{
 					height: "100%",
 					display: "flex",
@@ -283,6 +275,16 @@ export default function SolutionsScenarios() {
 					backgroundColor: "transparent",
 				}}
 			>
+				<Typography
+					variant="body1"
+					sx={{
+						ml: 1,
+						color: open ? theme.palette.primary.main : "inherit",
+						fontWeight: 700,
+					}}
+				>
+					Solutions & Scenarios
+				</Typography>
 				<Box
 					sx={{
 						display: "flex",
@@ -295,18 +297,8 @@ export default function SolutionsScenarios() {
 						color: open ? theme.palette.primary.main : "inherit",
 					}}
 				>
-					<ArrowForwardIosIcon />
+					<ArrowForwardIosIcon sx={{ fontSize: "12px" }} />
 				</Box>
-				<Typography
-					variant="body1"
-					sx={{
-						ml: 1,
-						color: open ? theme.palette.primary.main : "inherit",
-						fontWeight: 700,
-					}}
-				>
-					Solutions & Scenarios
-				</Typography>
 			</Box>
 			<DropdownBoxContainer open={open}>
 				<Box sx={{ padding: theme.spacing(2) }}>

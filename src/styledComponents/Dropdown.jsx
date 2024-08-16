@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 const DropdownBox = styled(Box, {
 	shouldForwardProp: (prop) => prop !== "isTransitioning" && prop !== "open",
 })(({ theme, open, isTransitioning }) => ({
+	position: "absolute",
 	display: "flex",
 	flexDirection: "column",
 	gap: "8px",
@@ -12,6 +13,9 @@ const DropdownBox = styled(Box, {
 	overflowY: isTransitioning ? "hidden" : "auto",
 	transition: "all 0.5s ease",
 	marginTop: open ? 16 : 0,
+	paddingInline: 16,
+	paddingBlock: open ? 16 : 0,
+	borderRadius: 12,
 	backgroundColor: theme.palette.background.paper,
 
 	// Estilos para a scrollbar
