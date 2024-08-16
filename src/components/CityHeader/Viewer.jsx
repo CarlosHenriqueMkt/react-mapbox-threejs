@@ -5,12 +5,9 @@ import {
 	ListItemText,
 	Box,
 	useTheme,
-	IconButton,
 	Typography,
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
-import { styled } from "@mui/system";
-import DropdownBox from "../../styledComponents/Dropdown";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
 import { useLocation } from "react-router-dom";
 
@@ -81,14 +78,8 @@ export default function Viewer() {
 	return (
 		<Box
 			sx={{
-				position: "absolute",
-				top: 120,
-				left: 20,
-				width: "274px",
-				paddingInline: "16px",
-				boxShadow: 3,
+				padding: "16px",
 				borderRadius: "8px",
-				backgroundColor: theme.palette.background.paper,
 				overflow: "hidden",
 			}}
 		>
@@ -121,9 +112,6 @@ export default function Viewer() {
 				>
 					<MenuIcon />
 				</Box>
-				<Typography variant="body1" sx={{ ml: 1, fontWeight: 700 }}>
-					3D Viewer
-				</Typography>
 			</Box>
 			<DropdownBoxContainer open={open}>
 				{menuItems.map((item, index) => (

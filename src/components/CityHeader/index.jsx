@@ -7,12 +7,19 @@ import {
 	Avatar,
 	Typography,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import { ArrowDropDown, NotificationsOutlined } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
+import Viewer from "./Viewer";
+import Facilities from "./Facilities";
+import SolutionsScenarios from "./SolutionsScenarios";
+import ToggleHandler from "../ToggleHandler";
 
 export default function CityHeader() {
 	const [searchText, setSearchText] = useState("");
+	const [openDropdown, setOpenDropdown] = useState(null); // Estado para controlar dropdowns
+	const location = useLocation();
 
 	const handleInputChange = (event) => {
 		setSearchText(event.target.value);
@@ -22,6 +29,23 @@ export default function CityHeader() {
 		setSearchText("");
 	};
 
+	const handleToggleDropdown = (key) => {
+		setOpenDropdown((prev) => (prev === key ? null : key));
+	};
+
+	const renderButtons = () => {
+		if (location.pathname.startsWith("/dubai")) {
+			return location.pathname.match(/\/dubai\/[^/]+$/) ? (
+				<SolutionsScenarios
+					open={openDropdown === "solutions"}
+					toggleDropdown={() => handleToggleDropdown("solutions")}
+				/>
+			) : (
+				<ToggleHandler />
+			);
+		}
+		return null;
+	};
 	return (
 		<Box
 			sx={{
@@ -49,12 +73,22 @@ export default function CityHeader() {
 					}}
 					disableGutters
 				>
-					<Box
-						component="img"
-						src="/logo.png"
-						alt="VirtuX Logo"
-						sx={{ height: 30, marginRight: 2 }}
-					/>
+					<Box display="flex" alignItems="center" gap="16px">
+						<Viewer />
+						<Box
+							component="img"
+							src="/logo.png"
+							alt="VirtuX Logo"
+							sx={{ height: 30, marginRight: 2 }}
+						/>
+						<Facilities
+							open={openDropdown === "facilities"}
+							toggleDropdown={() =>
+								handleToggleDropdown("facilities")
+							}
+						/>
+						{renderButtons()}
+					</Box>
 					<Box
 						sx={{
 							display: "flex",
