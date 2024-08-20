@@ -8,6 +8,7 @@ export const alerts = [
 		alarmType: "Smoke Alarm",
 		time: "5 April, 23:06:23",
 		route: "burj-mohammed",
+		buildingId: "b1",
 	},
 	{
 		id: "AL#2443",
@@ -16,6 +17,7 @@ export const alerts = [
 		alarmType: "Water Leakage",
 		time: "5 April, 23:06:23",
 		route: "al-hoda-tower",
+		buildingId: "b2",
 	},
 	{
 		id: "AL#2445",
@@ -24,6 +26,7 @@ export const alerts = [
 		alarmType: "Water Leakage",
 		time: "5 April, 23:06:23",
 		route: "al-hoda-tower",
+		buildingId: "b2",
 	},
 	{
 		id: "AL#2446",
@@ -32,6 +35,7 @@ export const alerts = [
 		alarmType: "Water Leakage",
 		time: "5 April, 23:06:23",
 		route: "al-hoda-tower",
+		buildingId: "b2",
 	},
 	{
 		id: "AL#2447",
@@ -40,5 +44,6 @@ export const alerts = [
 		alarmType: "Water Leakage",
 		time: "5 April, 23:06:23",
 		route: "al-hoda-tower",
+		buildingId: "b2",
 	},
 ];

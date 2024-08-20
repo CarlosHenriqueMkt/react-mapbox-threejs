@@ -1,17 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { pointsData } from "../../data/mapbox";
 import { Box } from "@mui/material";
-import FacilityDrawer from "../../components/FacilityDrawer";
-import PopupHandler from "../../components/PopUpHandler";
-import ButtonsBottomDubai from "../../components/Buttons/HowToUse";
-import ButtonTopCityInfo from "../../components/Buttons/ButtonTopCityInfo";
-import ButtonsTopFacility from "../../components/Buttons/ButtonsTopFacility";
-import CityUI from "../../components/CityUI";
+import CityFacilityDrawer from "../CityFacilityDrawer";
 
-export default function Dubai() {
+export default function DubaiCityView() {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
 
@@ -74,7 +68,7 @@ export default function Dubai() {
 								15.05,
 								["get", "min_height"],
 							],
-							"fill-extrusion-opacity": 0.6,
+							"fill-extrusion-opacity": 1,
 						},
 					},
 					labelLayerId
@@ -103,7 +97,6 @@ export default function Dubai() {
 
 	return (
 		<React.Fragment>
-			<CityUI />
 			<Box
 				ref={mapContainerRef}
 				sx={{
@@ -114,14 +107,11 @@ export default function Dubai() {
 					height: "100%",
 				}}
 			/>
-			<FacilityDrawer
+			<CityFacilityDrawer
 				open={drawerOpen}
 				onClose={handleDrawerClose}
 				facilityData={facilityData}
 			/>
-			<PopupHandler />
-			<ButtonTopCityInfo />
-			<ButtonsBottomDubai />
 		</React.Fragment>
 	);
 }

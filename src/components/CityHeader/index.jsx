@@ -6,6 +6,7 @@ import {
 	Toolbar,
 	Avatar,
 	Typography,
+	Link,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { ArrowDropDown, NotificationsOutlined } from "@mui/icons-material";
@@ -75,12 +76,14 @@ export default function CityHeader() {
 				>
 					<Box display="flex" alignItems="center" gap="16px">
 						<Viewer />
-						<Box
-							component="img"
-							src="/logo.png"
-							alt="VirtuX Logo"
-							sx={{ height: 30, marginRight: 2 }}
-						/>
+						<Link href="/dubai">
+							<Box
+								component="img"
+								src="/logo.png"
+								alt="VirtuX Logo"
+								sx={{ height: 30, marginRight: 2 }}
+							/>
+						</Link>
 						<Facilities
 							open={openDropdown === "facilities"}
 							toggleDropdown={() =>
