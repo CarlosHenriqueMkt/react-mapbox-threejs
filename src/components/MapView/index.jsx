@@ -11,19 +11,6 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [facilityData, setFacilityData] = useState(null);
 
-	// Salvar o estado do mapa no localStorage
-	const saveMapState = (map) => {
-		const center = map.getCenter();
-		const zoom = map.getZoom();
-		const bearing = map.getBearing();
-		const pitch = map.getPitch();
-		localStorage.setItem(
-			"mapState",
-			JSON.stringify({ center, zoom, bearing, pitch })
-		);
-	};
-
-	// Salvar a referência do mapa para movimentação posterior
 	useEffect(() => {
 		if (!moveCameraToCoordinates || !mapRef.current) {
 			console.error(
@@ -66,89 +53,35 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 
 		mapRef.current = new mapboxgl.Map({
 			container: mapContainerRef.current,
-			style: "mapbox://styles/unifi-solutions/cm033x3cf00ns01qqdyh75ied",
+			style: "mapbox://styles/unifi-solutions/cm04hfydg00sj01qq1cy4b1dr",
 			center: [55.274376, 25.197197],
 			zoom: 16,
 			pitch: 60,
 			bearing: -24,
-			antialias: true,
+			minZoom: 15.5,
+			maxZoom: 18,
+			antialias: false,
 		});
 
-		mapRef.current.on("load", () => {
-			const savedState = localStorage.getItem("mapState");
-			if (savedState) {
-				const { center, zoom, bearing, pitch } = JSON.parse(savedState);
-				mapRef.current.setCenter(center);
-				mapRef.current.setZoom(zoom);
-				mapRef.current.setBearing(bearing);
-				mapRef.current.setPitch(pitch);
-			}
+		console.log("Adding markers");
+		addInteractivePoints(mapRef.current);
 
-			if (!mapRef.current.getLayer("add-3d-buildings")) {
-				const layers = mapRef.current.getStyle().layers;
-				const labelLayerId = layers.find(
-					(layer) =>
-						layer.type === "symbol" && layer.layout["text-field"]
-				).id;
-				mapRef.current.addLayer(
-					{
-						id: "add-3d-buildings",
-						source: "composite",
-						"source-layer": "building",
-						filter: ["==", "extrude", "true"],
-						type: "fill-extrusion",
-						minzoom: 15,
-						paint: {
-							"fill-extrusion-color": "#FFF",
-							"fill-extrusion-height": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								15,
-								0,
-								15.05,
-								["get", "height"],
-							],
-							"fill-extrusion-base": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								15,
-								0,
-								15.05,
-								["get", "min_height"],
-							],
-							"fill-extrusion-opacity": 1,
-						},
-					},
-					labelLayerId
-				);
-			}
-
-			// Adiciona os marcadores e interação com o drawer
-			addInteractivePoints(mapRef.current);
-
-			// Add event listeners to save map state
-			mapRef.current.on("moveend", () => saveMapState(mapRef.current));
-			mapRef.current.on("zoomend", () => saveMapState(mapRef.current));
-			mapRef.current.on("rotateend", () => saveMapState(mapRef.current));
-			mapRef.current.on("pitchend", () => saveMapState(mapRef.current));
-		});
-
-		// Limpeza dos event listeners quando o componente for desmontado
 		return () => {
 			if (mapRef.current) {
-				mapRef.current.off("moveend", saveMapState);
-				mapRef.current.off("zoomend", saveMapState);
-				mapRef.current.off("rotateend", saveMapState);
-				mapRef.current.off("pitchend", saveMapState);
+				mapRef.current.remove();
 			}
 		};
 	}, []);
 
-	// Adicionar os marcadores usando as coordenadas do array buildings
 	const addInteractivePoints = (map) => {
 		buildings.forEach((building) => {
+			console.log(
+				"Adding marker for building:",
+				building.name,
+				"at coordinates:",
+				building.coordinates
+			);
+
 			const marker = new mapboxgl.Marker()
 				.setLngLat(building.coordinates)
 				.addTo(map);
