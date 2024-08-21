@@ -25,21 +25,31 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 
 	// Salvar a referência do mapa para movimentação posterior
 	useEffect(() => {
-		if (mapRef.current && moveCameraToCoordinates) {
-			console.log("Initializing moveCameraToCoordinates");
-			moveCameraToCoordinates.current = (coordinates) => {
-				console.log("Moving camera to:", coordinates);
-				mapRef.current.flyTo({
-					center: coordinates,
-					zoom: 18,
-					essential: true,
-				});
-			};
-		} else {
+		if (!moveCameraToCoordinates || !mapRef.current) {
 			console.error(
 				"moveCameraToCoordinates is not defined or mapRef is null"
 			);
+			return;
 		}
+
+		const initializeMoveCamera = () => {
+			if (mapRef.current && moveCameraToCoordinates) {
+				console.log("Initializing moveCameraToCoordinates");
+				moveCameraToCoordinates.current = (coordinates) => {
+					console.log("Moving camera to:", coordinates);
+					mapRef.current.flyTo({
+						center: coordinates,
+						zoom: 18,
+						essential: true,
+					});
+				};
+			}
+		};
+
+		// Use requestAnimationFrame para garantir que o DOM esteja completamente pronto
+		const rafId = requestAnimationFrame(initializeMoveCamera);
+
+		return () => cancelAnimationFrame(rafId);
 	}, [moveCameraToCoordinates]);
 
 	// Inicializar o mapa
