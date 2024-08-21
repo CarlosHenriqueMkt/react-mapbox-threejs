@@ -1,39 +1,79 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
-import { pointsData } from "../../data/mapbox";
 import { Box } from "@mui/material";
 import CityFacilityDrawer from "../CityFacilityDrawer";
+import { buildings } from "../../data/buildings"; // Certifique-se de ajustar o caminho correto
 
-export default function DubaiCityView() {
+export default function DubaiCityView({ moveCameraToCoordinates }) {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
-
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [facilityData, setFacilityData] = useState(null);
 
+	// Salvar o estado do mapa no localStorage
+	const saveMapState = (map) => {
+		const center = map.getCenter();
+		const zoom = map.getZoom();
+		const bearing = map.getBearing();
+		const pitch = map.getPitch();
+		localStorage.setItem(
+			"mapState",
+			JSON.stringify({ center, zoom, bearing, pitch })
+		);
+	};
+
+	// Salvar a referência do mapa para movimentação posterior
+	useEffect(() => {
+		if (mapRef.current && moveCameraToCoordinates) {
+			console.log("Initializing moveCameraToCoordinates");
+			moveCameraToCoordinates.current = (coordinates) => {
+				console.log("Moving camera to:", coordinates);
+				mapRef.current.flyTo({
+					center: coordinates,
+					zoom: 18,
+					essential: true,
+				});
+			};
+		} else {
+			console.error(
+				"moveCameraToCoordinates is not defined or mapRef is null"
+			);
+		}
+	}, [moveCameraToCoordinates]);
+
+	// Inicializar o mapa
 	useEffect(() => {
 		if (!mapboxglSupported.supported()) {
 			alert(
-				"Your browser does not support WebGL. Please use a browser that supports WebGL to view the map."
+				"Seu navegador não suporta WebGL. Por favor, use um navegador que suporte WebGL para visualizar o mapa."
 			);
 			return;
 		}
 
 		mapboxgl.accessToken =
-			"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ";
+			"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ"; // Substitua pelo seu token de acesso
 
 		mapRef.current = new mapboxgl.Map({
 			container: mapContainerRef.current,
-			style: "mapbox://styles/mapbox/light-v11",
+			style: "mapbox://styles/unifi-solutions/cm033x3cf00ns01qqdyh75ied",
 			center: [55.274376, 25.197197],
-			zoom: 15.5,
-			pitch: 45,
-			bearing: -17.6,
+			zoom: 16,
+			pitch: 60,
+			bearing: -24,
 			antialias: true,
 		});
 
 		mapRef.current.on("load", () => {
+			const savedState = localStorage.getItem("mapState");
+			if (savedState) {
+				const { center, zoom, bearing, pitch } = JSON.parse(savedState);
+				mapRef.current.setCenter(center);
+				mapRef.current.setZoom(zoom);
+				mapRef.current.setBearing(bearing);
+				mapRef.current.setPitch(pitch);
+			}
+
 			if (!mapRef.current.getLayer("add-3d-buildings")) {
 				const layers = mapRef.current.getStyle().layers;
 				const labelLayerId = layers.find(
@@ -49,7 +89,7 @@ export default function DubaiCityView() {
 						type: "fill-extrusion",
 						minzoom: 15,
 						paint: {
-							"fill-extrusion-color": "#aaa",
+							"fill-extrusion-color": "#FFF",
 							"fill-extrusion-height": [
 								"interpolate",
 								["linear"],
@@ -74,18 +114,37 @@ export default function DubaiCityView() {
 					labelLayerId
 				);
 			}
+
+			// Adiciona os marcadores e interação com o drawer
 			addInteractivePoints(mapRef.current);
+
+			// Add event listeners to save map state
+			mapRef.current.on("moveend", () => saveMapState(mapRef.current));
+			mapRef.current.on("zoomend", () => saveMapState(mapRef.current));
+			mapRef.current.on("rotateend", () => saveMapState(mapRef.current));
+			mapRef.current.on("pitchend", () => saveMapState(mapRef.current));
 		});
+
+		// Limpeza dos event listeners quando o componente for desmontado
+		return () => {
+			if (mapRef.current) {
+				mapRef.current.off("moveend", saveMapState);
+				mapRef.current.off("zoomend", saveMapState);
+				mapRef.current.off("rotateend", saveMapState);
+				mapRef.current.off("pitchend", saveMapState);
+			}
+		};
 	}, []);
 
+	// Adicionar os marcadores usando as coordenadas do array buildings
 	const addInteractivePoints = (map) => {
-		pointsData.forEach((point) => {
+		buildings.forEach((building) => {
 			const marker = new mapboxgl.Marker()
-				.setLngLat(point.coordinates)
+				.setLngLat(building.coordinates)
 				.addTo(map);
 
 			marker.getElement().addEventListener("click", () => {
-				setFacilityData(point);
+				setFacilityData(building);
 				setDrawerOpen(true);
 			});
 		});
