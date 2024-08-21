@@ -1,11 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
-import { alerts as mockAlerts } from "../../data/alerts";
+import { buildings } from "../../data/buildings"; // Importa o array buildings
 import { Box } from "@mui/material";
 import PopupAlert from "../PopupAlert";
 
 export default function PopupHandler() {
-	const [alerts, setAlerts] = useState(mockAlerts);
+	// Extrair os alertas dos buildings e criar um array único de alertas
+	const allAlerts = buildings.flatMap((building) => building.alerts);
+
+	const [alerts, setAlerts] = useState(allAlerts.slice(0, 3)); // Pega apenas os 3 primeiros alertas
+	const [isVisible, setIsVisible] = useState(false); // Estado para controle de visibilidade
 	const containerRef = useRef(null);
+
+	useEffect(() => {
+		// Simulação de carregamento de conteúdo e atraso para mostrar o popup
+		const timer = setTimeout(() => {
+			setIsVisible(true);
+		}, 5000); // 5 segundos de atraso
+
+		// Limpeza do timer ao desmontar o componente
+		return () => clearTimeout(timer);
+	}, []);
 
 	useEffect(() => {
 		if (containerRef.current) {
@@ -30,6 +44,8 @@ export default function PopupHandler() {
 				display: "flex",
 				flexDirection: "column-reverse",
 				gap: 2,
+				opacity: isVisible ? 1 : 0,
+				transition: "opacity 0.3s ease-in-out", // Animação de opacidade
 				"&::-webkit-scrollbar": {
 					width: "1px",
 					backgroundColor: "transparent",

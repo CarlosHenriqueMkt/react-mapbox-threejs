@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import CircleIcon from "@mui/icons-material/Circle";
 
-const FacilityDrawer = ({ open, onClose, facilityData }) => {
+export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 	const navigate = useNavigate();
 
 	const handleViewFacility = () => {
@@ -126,7 +126,7 @@ const FacilityDrawer = ({ open, onClose, facilityData }) => {
 			)}
 		</Box>
 	);
-};
+}
 
 const InfoCard = ({ title, value, color }) => {
 	const getBackgroundColor = (color) => {
@@ -170,5 +170,3 @@ const InfoCard = ({ title, value, color }) => {
 		</Box>
 	);
 };
-
-export default FacilityDrawer;
