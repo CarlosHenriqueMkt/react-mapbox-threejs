@@ -11,35 +11,17 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [facilityData, setFacilityData] = useState(null);
 
-	useEffect(() => {
-		if (!moveCameraToCoordinates || !mapRef.current) {
-			console.error(
-				"moveCameraToCoordinates is not defined or mapRef is null"
-			);
-			return;
-		}
+	// Função para salvar os markers no cache
+	const cacheMarkers = (markers) => {
+		localStorage.setItem("cachedMarkers", JSON.stringify(markers));
+	};
 
-		const initializeMoveCamera = () => {
-			if (mapRef.current && moveCameraToCoordinates) {
-				console.log("Initializing moveCameraToCoordinates");
-				moveCameraToCoordinates.current = (coordinates) => {
-					console.log("Moving camera to:", coordinates);
-					mapRef.current.flyTo({
-						center: coordinates,
-						zoom: 18,
-						essential: true,
-					});
-				};
-			}
-		};
+	// Função para carregar os markers do cache
+	const loadMarkersFromCache = () => {
+		const cachedMarkers = localStorage.getItem("cachedMarkers");
+		return cachedMarkers ? JSON.parse(cachedMarkers) : null;
+	};
 
-		// Use requestAnimationFrame para garantir que o DOM esteja completamente pronto
-		const rafId = requestAnimationFrame(initializeMoveCamera);
-
-		return () => cancelAnimationFrame(rafId);
-	}, [moveCameraToCoordinates]);
-
-	// Inicializar o mapa
 	useEffect(() => {
 		if (!mapboxglSupported.supported()) {
 			alert(
@@ -58,13 +40,21 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 			zoom: 16,
 			pitch: 60,
 			bearing: -24,
-			minZoom: 15.5,
+			minZoom: 10,
 			maxZoom: 18,
 			antialias: false,
 		});
 
-		console.log("Adding markers");
-		addInteractivePoints(mapRef.current);
+		const cachedMarkers = loadMarkersFromCache();
+
+		if (cachedMarkers) {
+			// Se os markers estiverem no cache, use-os
+			addInteractivePoints(mapRef.current, cachedMarkers);
+		} else {
+			// Caso contrário, adicione e cacheie os markers
+			addInteractivePoints(mapRef.current, buildings);
+			cacheMarkers(buildings);
+		}
 
 		return () => {
 			if (mapRef.current) {
@@ -73,15 +63,33 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 		};
 	}, []);
 
-	const addInteractivePoints = (map) => {
-		buildings.forEach((building) => {
-			console.log(
-				"Adding marker for building:",
-				building.name,
-				"at coordinates:",
-				building.coordinates
+	useEffect(() => {
+		if (!moveCameraToCoordinates || !mapRef.current) {
+			console.error(
+				"moveCameraToCoordinates is not defined or mapRef is null"
 			);
+			return;
+		}
 
+		const initializeMoveCamera = () => {
+			if (mapRef.current && moveCameraToCoordinates) {
+				moveCameraToCoordinates.current = (coordinates) => {
+					mapRef.current.flyTo({
+						center: coordinates,
+						zoom: 18,
+						essential: true,
+					});
+				};
+			}
+		};
+
+		const rafId = requestAnimationFrame(initializeMoveCamera);
+
+		return () => cancelAnimationFrame(rafId);
+	}, [moveCameraToCoordinates]);
+
+	const addInteractivePoints = (map, markersData) => {
+		markersData.forEach((building) => {
 			const marker = new mapboxgl.Marker()
 				.setLngLat(building.coordinates)
 				.addTo(map);

@@ -93,6 +93,7 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 							toggleDropdown={() =>
 								handleToggleDropdown("facilities")
 							}
+							onBuildingSelect={handleBuildingSelect}
 						/>
 						{renderButtons}
 					</Box>
