@@ -7,8 +7,10 @@ import {
 	Avatar,
 	Typography,
 	Link,
+	Menu,
+	MenuItem,
 } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import { ArrowDropDown, NotificationsOutlined } from "@mui/icons-material";
 import SearchBar from "../SearchBar";
 import Viewer from "./Viewer";
@@ -18,7 +20,9 @@ import ToggleHandler from "../ToggleHandler";
 
 export default function CityHeader({ moveCameraToCoordinates }) {
 	const [openDropdown, setOpenDropdown] = useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
 	const location = useLocation();
+	const navigate = useNavigate(); // Initialize useNavigate
 
 	const handleToggleDropdown = useCallback((key) => {
 		setOpenDropdown((prev) => (prev === key ? null : key));
@@ -49,6 +53,40 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 				"moveCameraToCoordinates.current is not defined or is not a function"
 			);
 		}
+	};
+
+	const handleDropdownClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleDropdownClose = () => {
+		setAnchorEl(null);
+	};
+
+	const handleLogout = () => {
+		// Clear stored credentials
+		localStorage.removeItem("accessToken");
+		localStorage.removeItem("refreshToken");
+		sessionStorage.clear();
+
+		// Logs to verify credentials have been removed
+		console.log(
+			"AccessToken after logout:",
+			localStorage.getItem("accessToken")
+		);
+		console.log(
+			"RefreshToken after logout:",
+			localStorage.getItem("refreshToken")
+		);
+		console.log(
+			"SessionStorage after logout:",
+			sessionStorage.length === 0 ? "Empty" : "Still contains data"
+		);
+
+		// Redirect the user to the login page
+		navigate("/");
+
+		handleDropdownClose();
 	};
 
 	return (
@@ -142,9 +180,18 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 									Basic Member
 								</Typography>
 							</Box>
-							<IconButton>
+							<IconButton onClick={handleDropdownClick}>
 								<ArrowDropDown />
 							</IconButton>
+							<Menu
+								anchorEl={anchorEl}
+								open={Boolean(anchorEl)}
+								onClose={handleDropdownClose}
+							>
+								<MenuItem onClick={handleLogout}>
+									Log Out
+								</MenuItem>
+							</Menu>
 						</Box>
 					</Box>
 				</Toolbar>
