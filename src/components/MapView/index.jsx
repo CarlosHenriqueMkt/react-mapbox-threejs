@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
 import { Box } from "@mui/material";
-import CityFacilityDrawer from "../CityFacilityDrawer";
-import { buildings } from "../../data/buildings"; // Certifique-se de ajustar o caminho correto
+import ApiFacilityDrawer from "../ApiFacilityDrawer";
+import BuildingFacilityDrawer from "../BuildingFacilityDrawer";
+import { buildings } from "../../data/buildings";
+import { fetchMarkerDataFromAPI } from "../../api/fetchMarkerDataFromAPI";
 
 export default function DubaiCityView({ moveCameraToCoordinates }) {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
-	const [drawerOpen, setDrawerOpen] = useState(false);
-	const [facilityData, setFacilityData] = useState(null);
+	const [drawerOpen, setDrawerOpen] = useState(false); // Controla se algum Drawer está aberto
+	const [apiDrawerOpen, setApiDrawerOpen] = useState(false); // Controla qual Drawer está aberto
+	const [selectedFacilityData, setSelectedFacilityData] = useState(null); // Armazena os dados selecionados
+	const [markersData, setMarkersData] = useState(null);
 
 	// Função para salvar os markers no cache
 	const cacheMarkers = (markers) => {
@@ -23,37 +27,53 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 	};
 
 	useEffect(() => {
-		if (!mapboxglSupported.supported()) {
-			alert(
-				"Seu navegador não suporta WebGL. Por favor, use um navegador que suporte WebGL para visualizar o mapa."
-			);
-			return;
-		}
+		const initializeMapAndMarkers = async () => {
+			if (!mapboxglSupported.supported()) {
+				alert(
+					"Seu navegador não suporta WebGL. Por favor, use um navegador que suporte WebGL para visualizar o mapa."
+				);
+				return;
+			}
 
-		mapboxgl.accessToken =
-			"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ"; // Substitua pelo seu token de acesso
+			// Busque os dados da API
+			const apiMarker = await fetchMarkerDataFromAPI();
+			if (!apiMarker) {
+				console.error("API marker is required but was not fetched.");
+				return;
+			}
 
-		mapRef.current = new mapboxgl.Map({
-			container: mapContainerRef.current,
-			style: "mapbox://styles/unifi-solutions/cm04hfydg00sj01qq1cy4b1dr",
-			center: [55.274376, 25.197197],
-			zoom: 16,
-			pitch: 60,
-			bearing: -24,
-			minZoom: 10,
-			maxZoom: 18,
-			antialias: false,
-		});
+			const allMarkers = [...buildings, apiMarker];
+			setMarkersData(allMarkers);
+
+			// Cacheie os marcadores
+			cacheMarkers(allMarkers);
+
+			// Inicialize o mapa após garantir que o marcador da API foi obtido
+			mapboxgl.accessToken =
+				"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ";
+
+			mapRef.current = new mapboxgl.Map({
+				container: mapContainerRef.current,
+				style: "mapbox://styles/unifi-solutions/cm04hfydg00sj01qq1cy4b1dr",
+				center: [55.274376, 25.197197],
+				zoom: 16,
+				pitch: 60,
+				bearing: -24,
+				minZoom: 10,
+				maxZoom: 18,
+				antialias: false,
+			});
+
+			// Adicione os marcadores ao mapa
+			addInteractivePoints(mapRef.current, allMarkers);
+		};
 
 		const cachedMarkers = loadMarkersFromCache();
-
 		if (cachedMarkers) {
-			// Se os markers estiverem no cache, use-os
-			addInteractivePoints(mapRef.current, cachedMarkers);
+			setMarkersData(cachedMarkers);
+			initializeMapAndMarkers();
 		} else {
-			// Caso contrário, adicione e cacheie os markers
-			addInteractivePoints(mapRef.current, buildings);
-			cacheMarkers(buildings);
+			initializeMapAndMarkers();
 		}
 
 		return () => {
@@ -89,14 +109,37 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 	}, [moveCameraToCoordinates]);
 
 	const addInteractivePoints = (map, markersData) => {
-		markersData.forEach((building) => {
-			const marker = new mapboxgl.Marker()
-				.setLngLat(building.coordinates)
+		markersData.forEach((marker) => {
+			const markerElement = new mapboxgl.Marker({ color: "purple" })
+				.setLngLat(marker.coordinates)
 				.addTo(map);
 
-			marker.getElement().addEventListener("click", () => {
-				setFacilityData(building);
-				setDrawerOpen(true);
+			markerElement.getElement().addEventListener("click", () => {
+				if (marker.qrcode) {
+					// Se é um dado da API
+					if (
+						apiDrawerOpen &&
+						selectedFacilityData?.id === marker.id
+					) {
+						setDrawerOpen(false); // Fecha se o mesmo marker da API for clicado
+					} else {
+						setSelectedFacilityData(marker);
+						setApiDrawerOpen(true);
+						setDrawerOpen(true); // Abre o Drawer da API
+					}
+				} else {
+					// Se é um dado de buildings
+					if (
+						!apiDrawerOpen &&
+						selectedFacilityData?.id === marker.id
+					) {
+						setDrawerOpen(false); // Fecha se o mesmo marker de buildings for clicado
+					} else {
+						setSelectedFacilityData(marker);
+						setApiDrawerOpen(false);
+						setDrawerOpen(true); // Abre o Drawer de buildings
+					}
+				}
 			});
 		});
 	};
@@ -104,6 +147,10 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 	const handleDrawerClose = () => {
 		setDrawerOpen(false);
 	};
+
+	if (!markersData) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<React.Fragment>
@@ -117,11 +164,19 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 					height: "100%",
 				}}
 			/>
-			<CityFacilityDrawer
-				open={drawerOpen}
-				onClose={handleDrawerClose}
-				facilityData={facilityData}
-			/>
+			{drawerOpen && apiDrawerOpen ? (
+				<ApiFacilityDrawer
+					open={drawerOpen}
+					onClose={handleDrawerClose}
+					facilityData={selectedFacilityData}
+				/>
+			) : (
+				<BuildingFacilityDrawer
+					open={drawerOpen}
+					onClose={handleDrawerClose}
+					facilityData={selectedFacilityData}
+				/>
+			)}
 		</React.Fragment>
 	);
 }

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import CircleIcon from "@mui/icons-material/Circle";
 
-export default function CityFacilityDrawer({ open, onClose, facilityData }) {
+export default function ApiFacilityDrawer({ open, onClose, facilityData }) {
 	const navigate = useNavigate();
 
 	const handleViewFacility = () => {
@@ -41,7 +41,7 @@ export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 						<HighlightOffIcon sx={{ fontSize: 20 }} />
 					</IconButton>
 					<Typography variant="body2" fontWeight="700">
-						Details
+						Api
 					</Typography>
 					<hr
 						style={{
