@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { alerts } from "../../data/alerts";
-import { buildings } from "../../data/buildings"; // Importe os prédios
 import { Box, Button } from "@mui/material";
 import FacilityScene from "./FacilityScene";
 import ButtonsTopFacility from "../Buttons/ButtonsTopFacility";
 import CityUI from "../CityUI";
 import FacilityDrawer from "./FacilityDrawer";
 import FacilityDrawerHandler from "../Buttons/FacilityDrawerHandler";
+import { fetchFacilityId } from "../../api/fetchFacilityId"; // Ajuste o caminho conforme necessário
 
 export default function FacilityView() {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const { facilityId } = useParams();
-	const building = buildings.find(
-		(building) => building.route === facilityId
-	);
-	const navigate = useNavigate();
+	const [building, setBuilding] = useState(null);
 	const [hasReloaded, setHasReloaded] = useState(false);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const loadBuildingData = async () => {
+			const fetchedBuilding = await fetchFacilityId(facilityId);
+			setBuilding(fetchedBuilding);
+		};
+
+		loadBuildingData();
+	}, [facilityId]);
 
 	useEffect(() => {
 		const lastReloadedPath = sessionStorage.getItem("lastReloadedPath");
@@ -43,7 +49,7 @@ export default function FacilityView() {
 					justifyContent: "center",
 				}}
 			>
-				Facility not found
+				Loading facility data...
 				<Button onClick={() => navigate("/dubai")}>
 					Back to Dubai
 				</Button>
@@ -77,29 +83,4 @@ export default function FacilityView() {
 			</Box>
 		</>
 	);
-}
-
-{
-	/* 
-	const buildingAlerts = alerts.filter(
-		(alert) => alert.buildingId === building.id
-	);
-	
-	<Box
-					position="absolute"
-					zIndex="99999"
-					overflow="hidden"
-					right={0}
-					top={0}
-					sx={{ pointerEvents: "none" }}
-				>
-					{buildingAlerts.map((alert) => (
-						<div key={alert.id}>
-							<p>{alert.type}</p>
-							<p>{alert.location}</p>
-							<p>{alert.alarmType}</p>
-							<p>{alert.time}</p>
-						</div>
-					))}
-				</Box> */
 }

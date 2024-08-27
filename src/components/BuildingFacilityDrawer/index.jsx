@@ -11,10 +11,6 @@ export default function BuildingFacilityDrawer({
 }) {
 	const navigate = useNavigate();
 
-	const handleViewFacility = () => {
-		navigate(`/dubai/${facilityData.path}`);
-	};
-
 	return (
 		<Box
 			sx={{
@@ -118,14 +114,18 @@ export default function BuildingFacilityDrawer({
 							}}
 						/>
 					</Box>
-					<Button
+					<Box
 						variant="contained"
-						color="primary"
-						onClick={handleViewFacility}
-						sx={{ width: "100%" }}
+						color="red"
+						sx={{
+							width: "100%",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
 					>
-						View Facility
-					</Button>
+						No View Facility
+					</Box>
 				</Box>
 			)}
 		</Box>

@@ -9,7 +9,7 @@ export default function Ground(props) {
 	materials["Klaas - Kirgas (Fast)"].roughness = 0;
 	return (
 		<group {...props} dispose={null}>
-			<GroundAreas visibleAreas={["IfcSpace101", "IfcSpace2-1"]} />
+			<GroundAreas visibleAreas={["IfcSpace2-1"]} />
 
 			<mesh
 				castShadow

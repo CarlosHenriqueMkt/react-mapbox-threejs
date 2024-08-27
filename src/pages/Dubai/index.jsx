@@ -8,7 +8,7 @@ import DubaiCityView from "../../components/MapView";
 import { Loader } from "@react-three/drei";
 
 export default function Dubai() {
-	const moveCameraRef = useRef(null); // Cria uma referência para a função de movimentação da câmera
+	const moveCameraRef = useRef(null);
 
 	return (
 		<Suspense fallback={<Loader />}>

@@ -1,26 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import mapboxglSupported from "@mapbox/mapbox-gl-supported";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import ApiFacilityDrawer from "../ApiFacilityDrawer";
 import BuildingFacilityDrawer from "../BuildingFacilityDrawer";
 import { buildings } from "../../data/buildings";
 import { fetchMarkerDataFromAPI } from "../../api/fetchMarkerDataFromAPI";
 
-export default function DubaiCityView({ moveCameraToCoordinates }) {
+export default function DubaiCityView({ moveCameraToCoordinates, onSetPopup }) {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
-	const [drawerOpen, setDrawerOpen] = useState(false); // Controla se algum Drawer está aberto
-	const [apiDrawerOpen, setApiDrawerOpen] = useState(false); // Controla qual Drawer está aberto
-	const [selectedFacilityData, setSelectedFacilityData] = useState(null); // Armazena os dados selecionados
+	const [drawerType, setDrawerType] = useState(null);
+	const [selectedFacilityData, setSelectedFacilityData] = useState(null);
 	const [markersData, setMarkersData] = useState(null);
 
-	// Função para salvar os markers no cache
 	const cacheMarkers = (markers) => {
 		localStorage.setItem("cachedMarkers", JSON.stringify(markers));
 	};
 
-	// Função para carregar os markers do cache
 	const loadMarkersFromCache = () => {
 		const cachedMarkers = localStorage.getItem("cachedMarkers");
 		return cachedMarkers ? JSON.parse(cachedMarkers) : null;
@@ -35,7 +32,6 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 				return;
 			}
 
-			// Busque os dados da API
 			const apiMarker = await fetchMarkerDataFromAPI();
 			if (!apiMarker) {
 				console.error("API marker is required but was not fetched.");
@@ -44,11 +40,8 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 
 			const allMarkers = [...buildings, apiMarker];
 			setMarkersData(allMarkers);
-
-			// Cacheie os marcadores
 			cacheMarkers(allMarkers);
 
-			// Inicialize o mapa após garantir que o marcador da API foi obtido
 			mapboxgl.accessToken =
 				"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ";
 
@@ -64,8 +57,20 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 				antialias: false,
 			});
 
-			// Adicione os marcadores ao mapa
-			addInteractivePoints(mapRef.current, allMarkers);
+			if (allMarkers) {
+				addInteractivePoints(mapRef.current, allMarkers);
+			}
+
+			// Inicializa a função moveCameraToCoordinates após a inicialização do mapa e marcadores
+			if (moveCameraToCoordinates) {
+				moveCameraToCoordinates.current = (coordinates) => {
+					mapRef.current.flyTo({
+						center: coordinates,
+						zoom: 24,
+						essential: true,
+					});
+				};
+			}
 		};
 
 		const cachedMarkers = loadMarkersFromCache();
@@ -81,75 +86,71 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 				mapRef.current.remove();
 			}
 		};
-	}, []);
-
-	useEffect(() => {
-		if (!moveCameraToCoordinates || !mapRef.current) {
-			console.error(
-				"moveCameraToCoordinates is not defined or mapRef is null"
-			);
-			return;
-		}
-
-		const initializeMoveCamera = () => {
-			if (mapRef.current && moveCameraToCoordinates) {
-				moveCameraToCoordinates.current = (coordinates) => {
-					mapRef.current.flyTo({
-						center: coordinates,
-						zoom: 18,
-						essential: true,
-					});
-				};
-			}
-		};
-
-		const rafId = requestAnimationFrame(initializeMoveCamera);
-
-		return () => cancelAnimationFrame(rafId);
 	}, [moveCameraToCoordinates]);
 
 	const addInteractivePoints = (map, markersData) => {
 		markersData.forEach((marker) => {
-			const markerElement = new mapboxgl.Marker({ color: "purple" })
+			const markerElement = new mapboxgl.Marker()
 				.setLngLat(marker.coordinates)
 				.addTo(map);
 
+			const popup = new mapboxgl.Popup({ offset: 25 }).setText(
+				marker.name
+			);
+
 			markerElement.getElement().addEventListener("click", () => {
+				markerElement.setPopup(popup).togglePopup();
+
 				if (marker.qrcode) {
-					// Se é um dado da API
 					if (
-						apiDrawerOpen &&
-						selectedFacilityData?.id === marker.id
+						selectedFacilityData?.id === marker.id &&
+						drawerType === "api"
 					) {
-						setDrawerOpen(false); // Fecha se o mesmo marker da API for clicado
+						setDrawerType(null);
 					} else {
 						setSelectedFacilityData(marker);
-						setApiDrawerOpen(true);
-						setDrawerOpen(true); // Abre o Drawer da API
+						setDrawerType("api");
 					}
 				} else {
-					// Se é um dado de buildings
 					if (
-						!apiDrawerOpen &&
-						selectedFacilityData?.id === marker.id
+						selectedFacilityData?.id === marker.id &&
+						drawerType === "building"
 					) {
-						setDrawerOpen(false); // Fecha se o mesmo marker de buildings for clicado
+						setDrawerType(null);
 					} else {
 						setSelectedFacilityData(marker);
-						setApiDrawerOpen(false);
-						setDrawerOpen(true); // Abre o Drawer de buildings
+						setDrawerType("building");
 					}
+				}
+
+				if (onSetPopup) {
+					onSetPopup(marker); // Atualiza o popup no componente pai
 				}
 			});
 		});
 	};
 
 	const handleDrawerClose = () => {
-		setDrawerOpen(false);
+		setDrawerType(null);
 	};
 
 	if (!markersData) {
-		return <div>Loading...</div>;
+		return (
+			<Box
+				sx={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					flexDirection: "column",
+					width: "100vw",
+					height: "100vh",
+					gap: "8px",
+				}}
+			>
+				Loading...
+				<CircularProgress fontSize="24px" />
+			</Box>
+		);
 	}
 
 	return (
@@ -164,15 +165,16 @@ export default function DubaiCityView({ moveCameraToCoordinates }) {
 					height: "100%",
 				}}
 			/>
-			{drawerOpen && apiDrawerOpen ? (
+			{drawerType === "api" && (
 				<ApiFacilityDrawer
-					open={drawerOpen}
+					open={!!drawerType}
 					onClose={handleDrawerClose}
 					facilityData={selectedFacilityData}
 				/>
-			) : (
+			)}
+			{drawerType === "building" && (
 				<BuildingFacilityDrawer
-					open={drawerOpen}
+					open={!!drawerType}
 					onClose={handleDrawerClose}
 					facilityData={selectedFacilityData}
 				/>
