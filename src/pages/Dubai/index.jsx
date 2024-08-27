@@ -8,12 +8,9 @@ import DubaiCityView from "../../components/MapView";
 import { Loader } from "@react-three/drei";
 
 export default function Dubai() {
-	const moveCameraRef = useRef(null);
-
 	return (
 		<Suspense fallback={<Loader />}>
-			<CityUI moveCameraToCoordinates={moveCameraRef} />
-			<DubaiCityView moveCameraToCoordinates={moveCameraRef} />
+			<DubaiCityView />
 			<PopupHandler />
 			<ButtonTopCityInfo />
 			<ButtonsBottomDubai />

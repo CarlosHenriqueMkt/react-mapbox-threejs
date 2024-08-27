@@ -6,13 +6,17 @@ import ApiFacilityDrawer from "../ApiFacilityDrawer";
 import BuildingFacilityDrawer from "../BuildingFacilityDrawer";
 import { buildings } from "../../data/buildings";
 import { fetchMarkerDataFromAPI } from "../../api/fetchMarkerDataFromAPI";
+import CityHeader from "../CityHeader";
 
-export default function DubaiCityView({ moveCameraToCoordinates, onSetPopup }) {
+export default function DubaiCityView() {
 	const mapContainerRef = useRef();
 	const mapRef = useRef();
+	const moveCameraRef = useRef(null);
 	const [drawerType, setDrawerType] = useState(null);
 	const [selectedFacilityData, setSelectedFacilityData] = useState(null);
 	const [markersData, setMarkersData] = useState(null);
+
+	let moveCameraToCoordinates = moveCameraRef;
 
 	const cacheMarkers = (markers) => {
 		localStorage.setItem("cachedMarkers", JSON.stringify(markers));
@@ -61,7 +65,6 @@ export default function DubaiCityView({ moveCameraToCoordinates, onSetPopup }) {
 				addInteractivePoints(mapRef.current, allMarkers);
 			}
 
-			// Inicializa a função moveCameraToCoordinates após a inicialização do mapa e marcadores
 			if (moveCameraToCoordinates) {
 				moveCameraToCoordinates.current = (coordinates) => {
 					mapRef.current.flyTo({
@@ -100,6 +103,11 @@ export default function DubaiCityView({ moveCameraToCoordinates, onSetPopup }) {
 
 			markerElement.getElement().addEventListener("click", () => {
 				markerElement.setPopup(popup).togglePopup();
+				map.flyTo({
+					center: marker.coordinates,
+					zoom: 18,
+					essential: true,
+				});
 
 				if (marker.qrcode) {
 					if (
@@ -122,16 +130,22 @@ export default function DubaiCityView({ moveCameraToCoordinates, onSetPopup }) {
 						setDrawerType("building");
 					}
 				}
-
-				if (onSetPopup) {
-					onSetPopup(marker); // Atualiza o popup no componente pai
-				}
 			});
 		});
 	};
 
 	const handleDrawerClose = () => {
 		setDrawerType(null);
+	};
+
+	const setPopup = (marker) => {
+		// Função para exibir o popup
+		const popup = new mapboxgl.Popup({ offset: 25 }).setText(marker.name);
+		const markerElement = new mapboxgl.Marker()
+			.setLngLat(marker.coordinates)
+			.addTo(mapRef.current);
+
+		markerElement.setPopup(popup).togglePopup();
 	};
 
 	if (!markersData) {
@@ -165,6 +179,18 @@ export default function DubaiCityView({ moveCameraToCoordinates, onSetPopup }) {
 					height: "100%",
 				}}
 			/>
+			<Box
+				width="100vw"
+				display="flex"
+				flexDirection="column"
+				position="absolute"
+				zIndex="999"
+			>
+				<CityHeader
+					moveCameraToCoordinates={moveCameraToCoordinates}
+					setPopup={setPopup} // Passe a função para CityHeader
+				/>
+			</Box>
 			{drawerType === "api" && (
 				<ApiFacilityDrawer
 					open={!!drawerType}

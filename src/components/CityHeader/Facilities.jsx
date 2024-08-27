@@ -15,7 +15,12 @@ import { useLocation } from "react-router-dom";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
 import { buildings } from "../../data/buildings"; // Usando o array buildings
 
-export default function Facilities({ open, toggleDropdown, onBuildingSelect }) {
+export default function Facilities({
+	open,
+	toggleDropdown,
+	onBuildingSelect,
+	onPopupSet,
+}) {
 	const theme = useTheme();
 	const [search, setSearch] = useState("");
 	const [activeFacility, setActiveFacility] = useState(null); // Novo estado para o botão ativo
@@ -48,6 +53,14 @@ export default function Facilities({ open, toggleDropdown, onBuildingSelect }) {
 		return new Promise((resolve) => {
 			onBuildingSelect(coordinates);
 			setTimeout(resolve, 300); // Ajuste o tempo conforme necessário
+		});
+	};
+
+	const handleItemClick = (coordinates, popupData) => {
+		moveCamera(coordinates).then(() => {
+			if (onPopupSet) {
+				onPopupSet(popupData);
+			}
 		});
 	};
 
@@ -86,7 +99,12 @@ export default function Facilities({ open, toggleDropdown, onBuildingSelect }) {
 									},
 									textAlign: "left",
 								}}
-								onClick={() => handleFacilityClick(facility)}
+								onClick={() =>
+									handleItemClick(
+										facility.coordinates,
+										facility.popupData
+									)
+								}
 							>
 								<Typography variant="body2">
 									{facility.name}
