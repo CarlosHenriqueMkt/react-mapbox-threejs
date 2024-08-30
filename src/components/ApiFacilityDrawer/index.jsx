@@ -1,12 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import CircleIcon from "@mui/icons-material/Circle";
+import InfoCard from "../InfoCard";
+import { workOrdersByStatus } from "../../api/workOrdersByStatus";
 import { fetchFacilityId } from "../../api/fetchFacilityId";
+import { workOrdersSLABreach } from "../../api/workOrderBySLABreach";
 
 export default function ApiFacilityDrawer({ open, onClose }) {
+	const [sla, setSLA] = useState(null);
+	const [statusCounts, setStatusCounts] = useState({});
+	const [workOrder, setWorkOrder] = useState(null);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const getTotalWorkOrders = async () => {
+			const workOrders = await workOrdersByStatus();
+			if (workOrders) {
+				setWorkOrder(workOrders);
+				const counts = workOrders.data.reduce((acc, workOrder) => {
+					const status = workOrder.status;
+					if (acc[status]) {
+						acc[status] += 1;
+					} else {
+						acc[status] = 1;
+					}
+					return acc;
+				}, {});
+				setStatusCounts(counts);
+			} else {
+				console.error("Failed to fetch work orders.");
+			}
+		};
+
+		const getTotalSLA = async () => {
+			const total = await workOrdersSLABreach();
+			if (total) {
+				setSLA(total);
+			} else {
+				console.error("Failed to fetch SLA breaches.");
+			}
+		};
+
+		getTotalWorkOrders();
+		getTotalSLA();
+	}, []);
+
+	const slaMet = sla?.slaBreach?.total;
 
 	const handleViewFacility = async () => {
 		const id = await fetchFacilityId();
@@ -73,10 +113,22 @@ export default function ApiFacilityDrawer({ open, onClose }) {
 					}}
 				>
 					<InfoCard title="Alarms" value="12" color="blue" />
-					<InfoCard title="Work Orders" value="5" color="purple" />
-					<InfoCard title="Active WOs" value="2" color="green" />
-					<InfoCard title="Closed WOs" value="7" color="blue" />
-					<InfoCard title="SLA Met" value="3" color="purple" />
+					<InfoCard
+						title="Work Orders"
+						value={workOrder?.totalRecords ?? "Data not available"}
+						color="purple"
+					/>
+					<InfoCard
+						title="Active WOs"
+						value={statusCounts["In Progress"] ?? 0}
+						color="green"
+					/>
+					<InfoCard
+						title="Closed WOs"
+						value={statusCounts["Closed"] ?? 0}
+						color="blue"
+					/>
+					<InfoCard title="SLA Met" value={slaMet} color="purple" />
 					<InfoCard title="People" value="20" color="purple" />
 				</Box>
 				<Box sx={{ mb: 2 }}>
@@ -102,46 +154,3 @@ export default function ApiFacilityDrawer({ open, onClose }) {
 		</Box>
 	);
 }
-
-const InfoCard = ({ title, value, color }) => {
-	const getBackgroundColor = (color) => {
-		switch (color) {
-			case "blue":
-				return "rgba(0, 0, 255, 0.1)";
-			case "purple":
-				return "rgba(128, 0, 128, 0.1)";
-			case "green":
-				return "rgba(0, 128, 0, 0.1)";
-			default:
-				return "rgba(0, 0, 0, 0.1)";
-		}
-	};
-
-	return (
-		<Box
-			sx={{
-				flex: "1 1 calc(50% - 16px)",
-				p: 2,
-				backgroundColor: getBackgroundColor(color),
-				borderRadius: 2,
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "flex-start",
-			}}
-		>
-			<Typography
-				variant="h2"
-				sx={{ fontSize: "12px", color: "#969696" }}
-			>
-				{title}
-			</Typography>
-			<Typography
-				variant="body1"
-				sx={{ fontSize: "18px", fontWeight: "700", color }}
-			>
-				{value}
-			</Typography>
-			<CircleIcon sx={{ color: color, fontSize: "8px" }} />
-		</Box>
-	);
-};

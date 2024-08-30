@@ -3,10 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import FacilityScene from "./FacilityScene";
 import ButtonsTopFacility from "../Buttons/ButtonsTopFacility";
-import CityUI from "../CityUI";
 import FacilityDrawer from "./FacilityDrawer";
 import FacilityDrawerHandler from "../Buttons/FacilityDrawerHandler";
 import { fetchFacilityId } from "../../api/fetchFacilityId"; // Ajuste o caminho conforme necessário
+import CityHeader from "../CityHeader";
 
 export default function FacilityView() {
 	const [drawerOpen, setDrawerOpen] = useState(false);
@@ -67,7 +67,15 @@ export default function FacilityView() {
 
 	return (
 		<>
-			<CityUI />
+			<Box
+				width="100vw"
+				display="flex"
+				flexDirection="column"
+				position="absolute"
+				zIndex="999"
+			>
+				<CityHeader />
+			</Box>
 			<FacilityDrawerHandler
 				onClick={handleClick}
 				drawerOpen={drawerOpen}

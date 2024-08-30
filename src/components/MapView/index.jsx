@@ -93,7 +93,9 @@ export default function DubaiCityView() {
 
 	const addInteractivePoints = (map, markersData) => {
 		markersData.forEach((marker) => {
-			const markerElement = new mapboxgl.Marker()
+			const markerElement = new mapboxgl.Marker({
+				color: "rgba(121, 50, 255, 1)",
+			})
 				.setLngLat(marker.coordinates)
 				.addTo(map);
 
