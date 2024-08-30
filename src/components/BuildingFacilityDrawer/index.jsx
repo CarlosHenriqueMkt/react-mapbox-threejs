@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import CircleIcon from "@mui/icons-material/Circle";
 
-export default function CityFacilityDrawer({ open, onClose, facilityData }) {
+export default function BuildingFacilityDrawer({
+	open,
+	onClose,
+	facilityData,
+}) {
 	const navigate = useNavigate();
-
-	const handleViewFacility = () => {
-		navigate(`/dubai/${facilityData.path}`);
-	};
 
 	return (
 		<Box
@@ -41,7 +41,7 @@ export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 						<HighlightOffIcon sx={{ fontSize: 20 }} />
 					</IconButton>
 					<Typography variant="body2" fontWeight="700">
-						Details
+						Building
 					</Typography>
 					<hr
 						style={{
@@ -114,14 +114,18 @@ export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 							}}
 						/>
 					</Box>
-					<Button
+					<Box
 						variant="contained"
-						color="primary"
-						onClick={handleViewFacility}
-						sx={{ width: "100%" }}
+						color="red"
+						sx={{
+							width: "100%",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
 					>
-						View Facility
-					</Button>
+						No View Facility
+					</Box>
 				</Box>
 			)}
 		</Box>

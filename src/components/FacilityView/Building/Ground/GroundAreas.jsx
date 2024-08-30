@@ -29,6 +29,7 @@ export default function GroundAreas(props) {
 					material={material}
 					position={nodes[key].position}
 					rotation={nodes[key].rotation}
+					onClick={() => console.log("deu ruim")}
 				/>
 			))}
 		</group>

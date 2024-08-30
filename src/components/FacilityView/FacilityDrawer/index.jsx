@@ -202,14 +202,14 @@ export default function FacilityDrawer({ open, facilityDrawerData }) {
 								mb: 2,
 							}}
 						>
-							{orders.map((item, index) => (
+							{/* 	{orders.map((item, index) => (
 								<InfoCard
 									key={index}
 									title={item.title}
 									value={item.value}
 									color={item.color}
 								/>
-							))}
+							))} */}
 						</Box>
 						<Box
 							component="img"
