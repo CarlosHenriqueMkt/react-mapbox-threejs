@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo } from "react";
 import {
 	Box,
 	IconButton,
-	InputBase,
 	Toolbar,
 	Avatar,
 	Typography,
@@ -10,7 +9,7 @@ import {
 	Menu,
 	MenuItem,
 } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowDropDown, NotificationsOutlined } from "@mui/icons-material";
 import SearchBar from "../SearchBar";
 import Viewer from "./Viewer";
@@ -18,11 +17,19 @@ import Facilities from "./Facilities";
 import SolutionsScenarios from "./SolutionsScenarios";
 import ToggleHandler from "../ToggleHandler";
 
-export default function CityHeader({ moveCameraToCoordinates }) {
+export default function CityHeader({
+	moveCameraToCoordinates,
+	setPopup,
+	drawerOpen,
+	markersData,
+	handleMarkerClick,
+	setDrawerOpen,
+	setSelectedFacilityData,
+}) {
 	const [openDropdown, setOpenDropdown] = useState(null);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const location = useLocation();
-	const navigate = useNavigate(); // Initialize useNavigate
+	const navigate = useNavigate();
 
 	const handleToggleDropdown = useCallback((key) => {
 		setOpenDropdown((prev) => (prev === key ? null : key));
@@ -52,6 +59,7 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 			console.error(
 				"moveCameraToCoordinates.current is not defined or is not a function"
 			);
+			setPopup(coordinates); // Caso não funcione a câmera, apenas exibe o popup
 		}
 	};
 
@@ -64,26 +72,10 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 	};
 
 	const handleLogout = () => {
-		// Clear stored credentials
 		localStorage.removeItem("accessToken");
 		localStorage.removeItem("refreshToken");
 		sessionStorage.clear();
 
-		// Logs to verify credentials have been removed
-		console.log(
-			"AccessToken after logout:",
-			localStorage.getItem("accessToken")
-		);
-		console.log(
-			"RefreshToken after logout:",
-			localStorage.getItem("refreshToken")
-		);
-		console.log(
-			"SessionStorage after logout:",
-			sessionStorage.length === 0 ? "Empty" : "Still contains data"
-		);
-
-		// Redirect the user to the login page
 		navigate("/");
 
 		handleDropdownClose();
@@ -132,6 +124,12 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 								handleToggleDropdown("facilities")
 							}
 							onBuildingSelect={handleBuildingSelect}
+							drawerOpen={drawerOpen}
+							setDrawerOpen={setDrawerOpen}
+							setSelectedFacilityData={setSelectedFacilityData}
+							setPopup={setPopup}
+							markersData={markersData}
+							handleMarkerClick={handleMarkerClick}
 						/>
 						{renderButtons}
 					</Box>
@@ -144,7 +142,10 @@ export default function CityHeader({ moveCameraToCoordinates }) {
 						}}
 					>
 						<SearchBar
-							onBuildingSelect={handleBuildingSelect} // Passe a função diretamente
+							markersData={markersData}
+							setDrawerOpen={setDrawerOpen}
+							setSelectedFacilityData={setSelectedFacilityData}
+							onBuildingSelect={handleBuildingSelect}
 						/>
 						<IconButton>
 							<NotificationsOutlined />

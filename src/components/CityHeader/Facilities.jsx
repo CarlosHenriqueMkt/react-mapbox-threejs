@@ -6,6 +6,7 @@ import {
 	TextField,
 	InputAdornment,
 	Button,
+	CircularProgress,
 } from "@mui/material";
 import {
 	Search as SearchIcon,
@@ -13,55 +14,70 @@ import {
 } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
-import { buildings } from "../../data/buildings"; // Usando o array buildings
+import { fetchFacilities } from "../../api/fetchFacilities";
 
 export default function Facilities({
 	open,
 	toggleDropdown,
 	onBuildingSelect,
-	onPopupSet,
+	handleMarkerClick,
 }) {
 	const theme = useTheme();
 	const [search, setSearch] = useState("");
-	const [activeFacility, setActiveFacility] = useState(null); // Novo estado para o botão ativo
+	const [activeFacility, setActiveFacility] = useState(null);
 	const [currentFacility, setCurrentFacility] = useState("Facilities");
+	const [markersData, setMarkersData] = useState([]);
+	const [page, setPage] = useState(1);
+	const [loading, setLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(true);
 	const location = useLocation();
+
+	const loadMoreFacilities = async () => {
+		setLoading(true);
+		const newFacilities = await fetchFacilities(page);
+		if (newFacilities.length > 0) {
+			const processedFacilities = newFacilities.map((facility) => ({
+				...facility,
+				coordinates: facility.location
+					? [facility.location.longitude, facility.location.latitude]
+					: [0, 0],
+			}));
+			setMarkersData((prev) => [...prev, ...processedFacilities]);
+			setPage((prevPage) => prevPage + 1);
+		} else {
+			setHasMore(false);
+		}
+		setLoading(false);
+	};
 
 	useEffect(() => {
 		if (location.pathname === "/dubai") {
 			setCurrentFacility("Facilities");
-			setActiveFacility(null); // Reseta o estado do botão ativo
+			setActiveFacility(null);
 		}
 	}, [location.pathname]);
+
+	useEffect(() => {
+		loadMoreFacilities();
+	}, []);
 
 	const handleSearchChange = useCallback((event) => {
 		setSearch(event.target.value);
 	}, []);
 
-	const handleFacilityClick = (building) => {
-		setCurrentFacility(building.name);
-		setActiveFacility(building.name); // Define o botão como ativo
+	const handleItemClick = (facility) => {
+		setCurrentFacility(facility.name);
+		setActiveFacility(facility.name);
+		onBuildingSelect(facility.coordinates);
 
-		moveCamera(building.coordinates).then(() => {
-			requestAnimationFrame(() => {
-				// Lógica adicional se necessário
-			});
-		});
+		handleMarkerClick(facility);
 	};
 
-	const moveCamera = (coordinates) => {
-		return new Promise((resolve) => {
-			onBuildingSelect(coordinates);
-			setTimeout(resolve, 300); // Ajuste o tempo conforme necessário
-		});
-	};
-
-	const handleItemClick = (coordinates, popupData) => {
-		moveCamera(coordinates).then(() => {
-			if (onPopupSet) {
-				onPopupSet(popupData);
-			}
-		});
+	const handleScroll = (event) => {
+		const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+		if (scrollHeight - scrollTop === clientHeight && !loading && hasMore) {
+			loadMoreFacilities();
+		}
 	};
 
 	const renderFacilities = useCallback(
@@ -99,12 +115,7 @@ export default function Facilities({
 									},
 									textAlign: "left",
 								}}
-								onClick={() =>
-									handleItemClick(
-										facility.coordinates,
-										facility.popupData
-									)
-								}
+								onClick={() => handleItemClick(facility)}
 							>
 								<Typography variant="body2">
 									{facility.name}
@@ -114,7 +125,7 @@ export default function Facilities({
 					</Box>
 				));
 		},
-		[activeFacility, handleFacilityClick, search, theme.spacing]
+		[activeFacility, search, theme.spacing]
 	);
 
 	return (
@@ -180,7 +191,36 @@ export default function Facilities({
 						}}
 					/>
 				</Box>
-				{renderFacilities(buildings)}
+				<Box
+					onScroll={handleScroll}
+					sx={{
+						overflowY: "auto",
+						"&::-webkit-scrollbar": {
+							width: "8px",
+							paddingBottom: "8px",
+						},
+						"&::-webkit-scrollbar-track": {
+							backgroundColor: "#F4F2FF",
+						},
+						"&::-webkit-scrollbar-thumb": {
+							backgroundColor: "#BEAEFF",
+							borderRadius: "8px",
+						},
+						"&::-webkit-scrollbar-thumb:hover": {
+							backgroundColor: theme.palette.primary.dark,
+						},
+						"&::-webkit-scrollbar-corner": {
+							backgroundColor: "#F4F2FF",
+						},
+					}}
+				>
+					{renderFacilities(markersData)}
+					{loading && (
+						<Box sx={{ display: "flex", justifyContent: "center" }}>
+							<CircularProgress size={24} />
+						</Box>
+					)}
+				</Box>
 			</DropdownBoxContainer>
 		</Box>
 	);

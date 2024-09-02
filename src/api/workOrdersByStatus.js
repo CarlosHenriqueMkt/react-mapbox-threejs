@@ -1,11 +1,11 @@
 import { getAccessToken } from "./authService";
 
-export const workOrdersByStatus = async () => {
+export const workOrdersByStatus = async (id) => {
 	try {
 		const accessToken = getAccessToken();
 
 		const response = await fetch(
-			`https://dev.fm.api.afcomms.com/api/work-order?total=true&asset=66c9bd56613b297ff804d0ef`,
+			`https://dev-2.api.facilitrol-x.xyz/api/work-order?total=true&asset=${id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${accessToken}`,

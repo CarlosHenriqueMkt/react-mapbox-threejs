@@ -10,9 +10,13 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { buildings } from "../../data/buildings";
 
-export default function SearchBar({ onBuildingSelect }) {
+export default function SearchBar({
+	onBuildingSelect,
+	markersData,
+	setDrawerOpen,
+	setSelectedFacilityData,
+}) {
 	const theme = useTheme();
 	const [searchText, setSearchText] = useState("");
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -32,10 +36,18 @@ export default function SearchBar({ onBuildingSelect }) {
 	const filteredBuildings = useMemo(() => {
 		if (!searchText) return [];
 		const lowercasedFilter = searchText.toLowerCase();
-		return buildings.filter((building) =>
-			building.name.toLowerCase().includes(lowercasedFilter)
+		return markersData.filter((facility) =>
+			facility.name.toLowerCase().includes(lowercasedFilter)
 		);
-	}, [searchText]);
+	}, [searchText, markersData]);
+
+	const handleItemClick = (facility) => {
+		// Seleciona a instalação e move a câmera para o local
+		onBuildingSelect(facility.coordinates);
+		// Define a instalação selecionada e abre o Drawer
+		setSelectedFacilityData(facility);
+		setDrawerOpen(true);
+	};
 
 	return (
 		<Box sx={{ position: "relative", width: "100%" }}>
@@ -118,16 +130,13 @@ export default function SearchBar({ onBuildingSelect }) {
 					}}
 				>
 					<List>
-						{filteredBuildings.map((building) => (
+						{filteredBuildings.map((facility) => (
 							<ListItemButton
-								key={building.id}
-								onClick={() => {
-									console.log("Clicked:", building.name);
-									onBuildingSelect(building.coordinates);
-								}}
+								key={facility.id}
+								onClick={() => handleItemClick(facility)}
 							>
 								<Typography variant="body1">
-									{building.name}
+									{facility.name}
 								</Typography>
 							</ListItemButton>
 						))}
