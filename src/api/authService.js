@@ -34,7 +34,7 @@ export const login = async (username, password) => {
 	storedPassword = password; // Armazena o password
 
 	const response = await fetch(
-		"https://dev.fm.api.afcomms.com/api/auth/login",
+		"https://dev-2.api.facilitrol-x.xyz/api/auth/login",
 		{
 			method: "POST",
 			headers: {

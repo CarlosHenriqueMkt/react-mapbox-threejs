@@ -1,6 +1,15 @@
-import React, { useState } from "react";
-import { Box, Typography, useTheme, styled, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+	Box,
+	Typography,
+	useTheme,
+	styled,
+	Button,
+	CircularProgress,
+} from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
+import { fetchTotalCityStatus } from "../../api/fetchTotalCityStatus";
+import { workOrdersTotalSLABreach } from "../../api/workOrderBySLABreach"; // Certifique-se de que o caminho esteja correto
 
 const DropdownBox = styled(Box)(({ theme }) => ({
 	display: "flex",
@@ -15,17 +24,43 @@ const DropdownBox = styled(Box)(({ theme }) => ({
 	},
 }));
 
-const menuItems = [
-	{ text: "Alarms", value: 1500, color: "#2377D1" },
-	{ text: "Work Orders", value: 47, color: "#7932FF" },
-	{ text: "Active WOs", value: 10, color: "#79B473" },
-	{ text: "Closed WOs", value: 37, color: "#969696" },
-	{ text: "SLA Met", value: "70%", color: "#2377D1" },
-];
-
 export default function ButtonTopCityInfo() {
 	const theme = useTheme();
 	const [open, setOpen] = useState(true); // Dropdown starts open by default
+	const [menuItems, setMenuItems] = useState([
+		{ text: "Alarms", value: null, color: "#2377D1" },
+		{ text: "Work Orders", value: null, color: "#7932FF" },
+		{ text: "Active WOs", value: null, color: "#79B473" },
+		{ text: "Closed WOs", value: null, color: "#969696" },
+		{ text: "SLA Met", value: null, color: "#2377D1" },
+	]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const cityStatus = await fetchTotalCityStatus();
+				const slaBreach = await workOrdersTotalSLABreach();
+				console.log(slaBreach);
+
+				if (cityStatus && slaBreach) {
+					setMenuItems((prevItems) => [
+						{ ...prevItems[0] }, // Alarms
+						{ ...prevItems[1], value: cityStatus.total }, // Work Orders
+						{
+							...prevItems[2],
+							value: cityStatus.data["In Progress"],
+						}, // Active WOs
+						{ ...prevItems[3], value: cityStatus.data["Closed"] }, // Closed WOs
+						{ ...prevItems[4], value: slaBreach.slaBreach.total }, // SLA Met
+					]);
+				}
+			} catch (error) {
+				console.error("Failed to fetch data:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	const handleClick = () => {
 		setOpen(!open);
@@ -129,7 +164,14 @@ export default function ButtonTopCityInfo() {
 									variant="body1"
 									sx={{ fontWeight: 700 }}
 								>
-									{item.value}
+									{item.value !== null ? (
+										item.value
+									) : (
+										<CircularProgress
+											size={20}
+											sx={{ color: item.color }}
+										/>
+									)}
 								</Typography>
 							</Box>
 							<CircleIcon

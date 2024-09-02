@@ -1,11 +1,11 @@
 import { getAccessToken } from "./authService";
 
-export const fetchFacilityId = async () => {
+export const fetchFacilities = async () => {
 	try {
 		const accessToken = getAccessToken();
 
 		const response = await fetch(
-			`https://dev-2.api.facilitrol-x.xyz/api/asset/66c9bd56613b297ff804d0ef`,
+			`https://dev-2.api.facilitrol-x.xyz/api/asset?total=true&type=facility`,
 			{
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
@@ -19,9 +19,8 @@ export const fetchFacilityId = async () => {
 		}
 
 		const result = await response.json();
-
-		// Retorna o id do facility diretamente
-		return result.data.id;
+		const data = result.data;
+		return data;
 	} catch (error) {
 		console.error("Error fetching facility data:", error);
 		return null;

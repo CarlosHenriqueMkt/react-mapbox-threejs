@@ -5,7 +5,7 @@ export const fetchMarkerDataFromAPI = async () => {
 		const accessToken = getAccessToken();
 
 		const response = await fetch(
-			"https://dev.fm.api.afcomms.com/api/asset/66c9bd56613b297ff804d0ef",
+			"https://dev-2.api.facilitrol-x.xyz/api/asset/66c9bd56613b297ff804d0ef",
 			{
 				headers: {
 					Authorization: `Bearer ${accessToken}`,

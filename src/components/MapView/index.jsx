@@ -1,54 +1,39 @@
 import React, { useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import mapboxglSupported from "@mapbox/mapbox-gl-supported";
 import { Box, CircularProgress } from "@mui/material";
-import ApiFacilityDrawer from "../ApiFacilityDrawer";
-import BuildingFacilityDrawer from "../BuildingFacilityDrawer";
-import { buildings } from "../../data/buildings";
-import { fetchMarkerDataFromAPI } from "../../api/fetchMarkerDataFromAPI";
+import CityFacilityDrawer from "../CityFacilityDrawer";
+import { fetchFacilities } from "../../api/fetchFacilities";
 import CityHeader from "../CityHeader";
+import mapboxgl from "../../utils/mapbox";
+import { addInteractivePoints } from "../../utils/interactivePoints";
 
 export default function DubaiCityView() {
-	const mapContainerRef = useRef();
-	const mapRef = useRef();
+	const mapContainerRef = useRef(null);
+	const mapRef = useRef(null);
 	const moveCameraRef = useRef(null);
-	const [drawerType, setDrawerType] = useState(null);
+	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [selectedFacilityData, setSelectedFacilityData] = useState(null);
 	const [markersData, setMarkersData] = useState(null);
 
-	let moveCameraToCoordinates = moveCameraRef;
+	useEffect(() => {
+		const fetchFacilitiesData = async () => {
+			const apiFacilities = await fetchFacilities();
+			if (!apiFacilities) return;
 
-	const cacheMarkers = (markers) => {
-		localStorage.setItem("cachedMarkers", JSON.stringify(markers));
-	};
+			const processedFacilities = apiFacilities.map((facility) => ({
+				...facility,
+				coordinates: facility.location
+					? [facility.location.longitude, facility.location.latitude]
+					: [0, 0],
+			}));
 
-	const loadMarkersFromCache = () => {
-		const cachedMarkers = localStorage.getItem("cachedMarkers");
-		return cachedMarkers ? JSON.parse(cachedMarkers) : null;
-	};
+			setMarkersData(processedFacilities);
+		};
+
+		fetchFacilitiesData();
+	}, []);
 
 	useEffect(() => {
-		const initializeMapAndMarkers = async () => {
-			if (!mapboxglSupported.supported()) {
-				alert(
-					"Seu navegador não suporta WebGL. Por favor, use um navegador que suporte WebGL para visualizar o mapa."
-				);
-				return;
-			}
-
-			const apiMarker = await fetchMarkerDataFromAPI();
-			if (!apiMarker) {
-				console.error("API marker is required but was not fetched.");
-				return;
-			}
-
-			const allMarkers = [...buildings, apiMarker];
-			setMarkersData(allMarkers);
-			cacheMarkers(allMarkers);
-
-			mapboxgl.accessToken =
-				"pk.eyJ1IjoidW5pZmktc29sdXRpb25zIiwiYSI6ImNseXBuMDh4ZDBudnYyaW9qZWJwZWR1OGcifQ.J5QN12t-DF9QsCefLyjepQ";
-
+		if (mapContainerRef.current && markersData && !mapRef.current) {
 			mapRef.current = new mapboxgl.Map({
 				container: mapContainerRef.current,
 				style: "mapbox://styles/unifi-solutions/cm04hfydg00sj01qq1cy4b1dr",
@@ -61,93 +46,35 @@ export default function DubaiCityView() {
 				antialias: false,
 			});
 
-			if (allMarkers) {
-				addInteractivePoints(mapRef.current, allMarkers);
-			}
+			addInteractivePoints(
+				mapRef.current,
+				markersData,
+				handleMarkerClick
+			);
 
-			if (moveCameraToCoordinates) {
-				moveCameraToCoordinates.current = (coordinates) => {
+			moveCameraRef.current = (coordinates) => {
+				if (coordinates) {
 					mapRef.current.flyTo({
 						center: coordinates,
 						zoom: 24,
 						essential: true,
 					});
-				};
-			}
-		};
-
-		const cachedMarkers = loadMarkersFromCache();
-		if (cachedMarkers) {
-			setMarkersData(cachedMarkers);
-			initializeMapAndMarkers();
-		} else {
-			initializeMapAndMarkers();
-		}
-
-		return () => {
-			if (mapRef.current) {
-				mapRef.current.remove();
-			}
-		};
-	}, [moveCameraToCoordinates]);
-
-	const addInteractivePoints = (map, markersData) => {
-		markersData.forEach((marker) => {
-			const markerElement = new mapboxgl.Marker({
-				color: "rgba(121, 50, 255, 1)",
-			})
-				.setLngLat(marker.coordinates)
-				.addTo(map);
-
-			const popup = new mapboxgl.Popup({ offset: 25 }).setText(
-				marker.name
-			);
-
-			markerElement.getElement().addEventListener("click", () => {
-				markerElement.setPopup(popup).togglePopup();
-				map.flyTo({
-					center: marker.coordinates,
-					zoom: 18,
-					essential: true,
-				});
-
-				if (marker.qrcode) {
-					if (
-						selectedFacilityData?.id === marker.id &&
-						drawerType === "api"
-					) {
-						setDrawerType(null);
-					} else {
-						setSelectedFacilityData(marker);
-						setDrawerType("api");
-					}
-				} else {
-					if (
-						selectedFacilityData?.id === marker.id &&
-						drawerType === "building"
-					) {
-						setDrawerType(null);
-					} else {
-						setSelectedFacilityData(marker);
-						setDrawerType("building");
-					}
 				}
-			});
-		});
+			};
+		}
+	}, [markersData]);
+
+	const handleMarkerClick = (marker) => {
+		if (selectedFacilityData?.id === marker.id) {
+			setDrawerOpen(!drawerOpen);
+		} else {
+			setSelectedFacilityData(marker);
+			setDrawerOpen(true);
+		}
 	};
 
 	const handleDrawerClose = () => {
-		setDrawerType(null);
-	};
-
-	const setPopup = (marker) => {
-		// Função para exibir o popup
-		const popup = new mapboxgl.Popup({ offset: 25 }).setText(marker.name);
-		const markerElement = new mapboxgl.Marker()
-			.setLngLat(marker.coordinates)
-			.addTo(mapRef.current);
-
-		markerElement.setPopup(popup).togglePopup();
+		setDrawerOpen(false);
 	};
 
 	if (!markersData) {
@@ -189,24 +116,18 @@ export default function DubaiCityView() {
 				zIndex="999"
 			>
 				<CityHeader
-					moveCameraToCoordinates={moveCameraToCoordinates}
-					setPopup={setPopup} // Passe a função para CityHeader
+					moveCameraToCoordinates={moveCameraRef}
+					setDrawerOpen={setDrawerOpen}
+					setSelectedFacilityData={setSelectedFacilityData}
+					markersData={markersData}
+					handleMarkerClick={handleMarkerClick}
 				/>
 			</Box>
-			{drawerType === "api" && (
-				<ApiFacilityDrawer
-					open={!!drawerType}
-					onClose={handleDrawerClose}
-					facilityData={selectedFacilityData}
-				/>
-			)}
-			{drawerType === "building" && (
-				<BuildingFacilityDrawer
-					open={!!drawerType}
-					onClose={handleDrawerClose}
-					facilityData={selectedFacilityData}
-				/>
-			)}
+			<CityFacilityDrawer
+				open={drawerOpen}
+				onClose={handleDrawerClose}
+				facilityData={selectedFacilityData}
+			/>
 		</React.Fragment>
 	);
 }
