@@ -2,14 +2,17 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import GroundAreas from "./GroundAreas";
 
-export default function Ground(props) {
+export default function Ground({ onMeshClick, ...props }) {
 	const { nodes, materials } = useGLTF("/models/ground_o2.glb");
 
 	materials["Klaas - Kirgas (Fast)"].transparent = false;
 	materials["Klaas - Kirgas (Fast)"].roughness = 0;
 	return (
 		<group {...props} dispose={null}>
-			<GroundAreas visibleAreas={["IfcSpace2-1"]} />
+			<GroundAreas
+				onMeshClick={onMeshClick}
+				visibleAreas={["IfcSpace2-1"]}
+			/>
 
 			<mesh
 				castShadow

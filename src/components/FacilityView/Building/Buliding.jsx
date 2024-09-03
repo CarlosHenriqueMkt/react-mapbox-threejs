@@ -10,21 +10,21 @@ import Facade from "./Facade/Facade";
 import { floorState } from "../../../store/floorState";
 import FloorSelectorObjects from "../FloorSelector/FloorSelectorGroup";
 
-const floorComponents = {
-	"Ground Floor": <Ground />,
-	"First Floor": <Floor1 />,
-	"Second Floor": <Floor2 />,
-	"Third Floor": <Floor3 />,
-	"Fourth Floor": <Floor4 />,
-};
-
-export default function Building(props) {
+export default function Building({ onMeshClick, ...props }) {
 	const { selectedFloor } = useSnapshot(floorState);
+
+	const floorComponents = {
+		"Ground Floor": <Ground onMeshClick={onMeshClick} />,
+		"First Floor": <Floor1 />,
+		"Second Floor": <Floor2 />,
+		"Third Floor": <Floor3 />,
+		"Fourth Floor": <Floor4 />,
+	};
 
 	return (
 		<>
 			<group {...props}>
-				{floorComponents[selectedFloor] || <Facade />}
+				{selectedFloor ? floorComponents[selectedFloor] : <Facade />}
 			</group>
 			{!selectedFloor && (
 				<group>
