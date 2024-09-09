@@ -8,8 +8,22 @@ import {
 	CircularProgress,
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
-import { fetchTotalCityStatus } from "../../api/fetchTotalCityStatus";
-import { workOrdersTotalSLABreach } from "../../api/workOrderBySLABreach"; // Certifique-se de que o caminho esteja correto
+
+// Mock data para substituir a resposta das APIs
+const mockCityStatus = {
+	total: 100,
+	data: {
+		"In Progress": 45,
+		Closed: 55,
+		Alarms: 2,
+	},
+};
+
+const mockSlaBreach = {
+	slaBreach: {
+		total: 5,
+	},
+};
 
 const DropdownBox = styled(Box)(({ theme }) => ({
 	display: "flex",
@@ -32,34 +46,26 @@ export default function ButtonTopCityInfo() {
 		{ text: "Work Orders", value: null, color: "#7932FF" },
 		{ text: "Active WOs", value: null, color: "#79B473" },
 		{ text: "Closed WOs", value: null, color: "#969696" },
-		{ text: "SLA Met", value: null, color: "#2377D1" },
+		{ text: "SLA Breach", value: null, color: "#2377D1" },
 	]);
 
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const cityStatus = await fetchTotalCityStatus();
-				const slaBreach = await workOrdersTotalSLABreach();
-				console.log(slaBreach);
+		// Substituindo chamadas de API por dados mockados
+		const cityStatus = mockCityStatus;
+		const slaBreach = mockSlaBreach;
 
-				if (cityStatus && slaBreach) {
-					setMenuItems((prevItems) => [
-						{ ...prevItems[0] }, // Alarms
-						{ ...prevItems[1], value: cityStatus.total }, // Work Orders
-						{
-							...prevItems[2],
-							value: cityStatus.data["In Progress"],
-						}, // Active WOs
-						{ ...prevItems[3], value: cityStatus.data["Closed"] }, // Closed WOs
-						{ ...prevItems[4], value: slaBreach.slaBreach.total }, // SLA Met
-					]);
-				}
-			} catch (error) {
-				console.error("Failed to fetch data:", error);
-			}
-		};
-
-		fetchData();
+		if (cityStatus && slaBreach) {
+			setMenuItems((prevItems) => [
+				{ ...prevItems[0], value: cityStatus.data["Alarms"] }, // Alarms (mantém valor nulo)
+				{ ...prevItems[1], value: cityStatus.total }, // Work Orders
+				{
+					...prevItems[2],
+					value: cityStatus.data["In Progress"],
+				}, // Active WOs
+				{ ...prevItems[3], value: cityStatus.data["Closed"] }, // Closed WOs
+				{ ...prevItems[4], value: slaBreach.slaBreach.total }, // SLA Breach
+			]);
+		}
 	}, []);
 
 	const handleClick = () => {

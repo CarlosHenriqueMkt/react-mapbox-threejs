@@ -1,10 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import CityFacilityDrawer from "../CityFacilityDrawer";
-import { fetchFacilities } from "../../api/fetchFacilities";
 import CityHeader from "../CityHeader";
 import mapboxgl from "../../utils/mapbox";
 import { addInteractivePoints } from "../../utils/interactivePoints";
+
+// Mock data para substituir a resposta da API
+const mockFacilities = [
+	{
+		id: 1,
+		name: "Facility 1",
+		location: { latitude: 25.197197, longitude: 55.274376 },
+		description: "Description for Facility 1",
+	},
+	{
+		id: 2,
+		name: "Facility 2",
+		location: { latitude: 25.198197, longitude: 55.275376 },
+		description: "Description for Facility 2",
+	},
+	{
+		id: 3,
+		name: "Facility 3",
+		location: { latitude: 25.199197, longitude: 55.276376 },
+		description: "Description for Facility 3",
+	},
+];
 
 export default function DubaiCityView() {
 	const mapContainerRef = useRef(null);
@@ -15,8 +36,9 @@ export default function DubaiCityView() {
 	const [markersData, setMarkersData] = useState(null);
 
 	useEffect(() => {
+		// Substituindo a chamada à API com os dados mockados
 		const fetchFacilitiesData = async () => {
-			const apiFacilities = await fetchFacilities();
+			const apiFacilities = mockFacilities; // Usando dados mockados
 			if (!apiFacilities) return;
 
 			const processedFacilities = apiFacilities.map((facility) => ({

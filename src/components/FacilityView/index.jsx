@@ -5,10 +5,37 @@ import FacilityScene from "./FacilityScene";
 import ButtonsTopFacility from "../Buttons/ButtonsTopFacility";
 import FacilityDrawer from "../FacilityDrawer";
 import FacilityDrawerHandler from "../Buttons/FacilityDrawerHandler";
-import { fetchFacilities } from "../../api/fetchFacilities";
-import { workOrdersByStatus } from "../../api/workOrdersByStatus";
-import { workOrdersSLABreachById } from "../../api/workOrderBySLABreach";
 import CityHeader from "../CityHeader";
+
+// Mock data para substituir as APIs
+const mockFacilities = [
+	{
+		id: 1,
+		name: "Facility 1",
+		location: { city: "Dubai", latitude: 25.197197, longitude: 55.274376 },
+		description: "Description for Facility 1",
+	},
+	// Adicione mais mock facilities conforme necessário
+];
+
+const mockWorkOrders = {
+	totalRecords: 120,
+	data: [
+		{ status: "In Progress" },
+		{ status: "In Progress" },
+		{ status: "Closed" },
+		{ status: "In Progress" },
+		{ status: "Closed" },
+	],
+};
+
+const mockSLAData = {
+	slaBreach: {
+		data: {
+			restoration: 5,
+		},
+	},
+};
 
 export default function FacilityView() {
 	const [drawerOpen, setDrawerOpen] = useState(false);
@@ -19,12 +46,18 @@ export default function FacilityView() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const loadBuildingData = async () => {
+		const loadBuildingData = () => {
 			try {
-				const fetchedBuilding = await fetchFacilities(facilityId);
+				// Substitui a chamada da API `fetchFacilities` por dados mockados
+				const fetchedBuilding = mockFacilities.find(
+					(facility) => facility.id.toString() === facilityId
+				);
 
-				const workOrders = await workOrdersByStatus(facilityId);
-				const slaData = await workOrdersSLABreachById(facilityId);
+				// Substitui a chamada da API `workOrdersByStatus` por dados mockados
+				const workOrders = mockWorkOrders;
+
+				// Substitui a chamada da API `workOrdersSLABreachById` por dados mockados
+				const slaData = mockSLAData;
 
 				const statusCounts = workOrders?.data?.reduce(
 					(acc, workOrder) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
 	Box,
 	useTheme,
@@ -6,7 +6,6 @@ import {
 	TextField,
 	InputAdornment,
 	Button,
-	CircularProgress,
 } from "@mui/material";
 import {
 	Search as SearchIcon,
@@ -14,52 +13,45 @@ import {
 } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import DropdownBoxContainer from "../../styledComponents/Dropdown";
-import { fetchFacilities } from "../../api/fetchFacilities";
+
+// Mock data
+const mockFacilities = [
+	{
+		id: 1,
+		name: "Facility 1",
+		location: { latitude: 25.197197, longitude: 55.274376 },
+		description: "Description for Facility 1",
+	},
+	{
+		id: 2,
+		name: "Facility 2",
+		location: { latitude: 25.198197, longitude: 55.275376 },
+		description: "Description for Facility 2",
+	},
+	{
+		id: 3,
+		name: "Facility 3",
+		location: { latitude: 25.199197, longitude: 55.276376 },
+		description: "Description for Facility 3",
+	},
+	{
+		id: 4,
+		name: "Facility 4",
+		location: { latitude: 25.200197, longitude: 55.277376 },
+		description: "Description for Facility 4",
+	},
+];
 
 export default function Facilities({
 	open,
 	toggleDropdown,
-	onBuildingSelect,
+	onBuildingSelect, // Função que move a câmera
 	handleMarkerClick,
 }) {
 	const theme = useTheme();
 	const [search, setSearch] = useState("");
 	const [activeFacility, setActiveFacility] = useState(null);
 	const [currentFacility, setCurrentFacility] = useState("Facilities");
-	const [markersData, setMarkersData] = useState([]);
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(true);
-	const location = useLocation();
-
-	const loadMoreFacilities = async () => {
-		setLoading(true);
-		const newFacilities = await fetchFacilities(page);
-		if (newFacilities.length > 0) {
-			const processedFacilities = newFacilities.map((facility) => ({
-				...facility,
-				coordinates: facility.location
-					? [facility.location.longitude, facility.location.latitude]
-					: [0, 0],
-			}));
-			setMarkersData((prev) => [...prev, ...processedFacilities]);
-			setPage((prevPage) => prevPage + 1);
-		} else {
-			setHasMore(false);
-		}
-		setLoading(false);
-	};
-
-	useEffect(() => {
-		if (location.pathname === "/dubai") {
-			setCurrentFacility("Facilities");
-			setActiveFacility(null);
-		}
-	}, [location.pathname]);
-
-	useEffect(() => {
-		loadMoreFacilities();
-	}, []);
 
 	const handleSearchChange = useCallback((event) => {
 		setSearch(event.target.value);
@@ -68,15 +60,18 @@ export default function Facilities({
 	const handleItemClick = (facility) => {
 		setCurrentFacility(facility.name);
 		setActiveFacility(facility.name);
-		onBuildingSelect(facility.coordinates);
 
-		handleMarkerClick(facility);
-	};
+		// Chama a função para mover a câmera para a localização da instalação
+		if (onBuildingSelect && facility.location) {
+			onBuildingSelect([
+				facility.location.longitude,
+				facility.location.latitude,
+			]);
+		}
 
-	const handleScroll = (event) => {
-		const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-		if (scrollHeight - scrollTop === clientHeight && !loading && hasMore) {
-			loadMoreFacilities();
+		// Chama a função de clicar no marcador
+		if (handleMarkerClick) {
+			handleMarkerClick(facility);
 		}
 	};
 
@@ -86,8 +81,8 @@ export default function Facilities({
 				.filter((facility) =>
 					facility.name.toLowerCase().includes(search.toLowerCase())
 				)
-				.map((facility, index) => (
-					<Box key={index} sx={{ padding: 1 }}>
+				.map((facility) => (
+					<Box key={facility.id} sx={{ padding: 1 }}>
 						<Box
 							sx={{
 								display: "flex",
@@ -192,7 +187,6 @@ export default function Facilities({
 					/>
 				</Box>
 				<Box
-					onScroll={handleScroll}
 					sx={{
 						overflowY: "auto",
 						"&::-webkit-scrollbar": {
@@ -214,12 +208,7 @@ export default function Facilities({
 						},
 					}}
 				>
-					{renderFacilities(markersData)}
-					{loading && (
-						<Box sx={{ display: "flex", justifyContent: "center" }}>
-							<CircularProgress size={24} />
-						</Box>
-					)}
+					{renderFacilities(mockFacilities)}
 				</Box>
 			</DropdownBoxContainer>
 		</Box>

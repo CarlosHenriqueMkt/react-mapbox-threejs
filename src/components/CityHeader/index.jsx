@@ -14,6 +14,7 @@ import { ArrowDropDown, NotificationsOutlined } from "@mui/icons-material";
 import SearchBar from "../SearchBar";
 import Viewer from "./Viewer";
 import Facilities from "./Facilities";
+import FacilityDropdown from "../FacilityDropdown";
 import SolutionsScenarios from "./SolutionsScenarios";
 import ToggleHandler from "../ToggleHandler";
 
@@ -35,9 +36,15 @@ export default function CityHeader({
 		setOpenDropdown((prev) => (prev === key ? null : key));
 	}, []);
 
+	// Verificação para determinar se a URL tem um ID específico
+	const hasFacilityId = useMemo(() => {
+		const match = location.pathname.match(/\/dubai\/([^/]+)$/);
+		return match ? match[1] : null;
+	}, [location.pathname]);
+
 	const renderButtons = useMemo(() => {
 		if (location.pathname.startsWith("/dubai")) {
-			return location.pathname.match(/\/dubai\/[^/]+$/) ? (
+			return hasFacilityId ? (
 				<SolutionsScenarios
 					open={openDropdown === "solutions"}
 					toggleDropdown={() => handleToggleDropdown("solutions")}
@@ -47,7 +54,7 @@ export default function CityHeader({
 			);
 		}
 		return null;
-	}, [location.pathname, openDropdown, handleToggleDropdown]);
+	}, [location.pathname, openDropdown, handleToggleDropdown, hasFacilityId]);
 
 	const handleBuildingSelect = (coordinates) => {
 		if (
@@ -118,19 +125,33 @@ export default function CityHeader({
 								sx={{ height: 30, marginRight: 2 }}
 							/>
 						</Link>
-						<Facilities
-							open={openDropdown === "facilities"}
-							toggleDropdown={() =>
-								handleToggleDropdown("facilities")
-							}
-							onBuildingSelect={handleBuildingSelect}
-							drawerOpen={drawerOpen}
-							setDrawerOpen={setDrawerOpen}
-							setSelectedFacilityData={setSelectedFacilityData}
-							setPopup={setPopup}
-							markersData={markersData}
-							handleMarkerClick={handleMarkerClick}
-						/>
+
+						{/* Renderização condicional de Facilities ou Facility */}
+						{hasFacilityId ? (
+							<FacilityDropdown
+								id={hasFacilityId}
+								open={openDropdown === "facilities"}
+								toggleDropdown={() =>
+									handleToggleDropdown("facilities")
+								}
+							/>
+						) : (
+							<Facilities
+								open={openDropdown === "facilities"}
+								toggleDropdown={() =>
+									handleToggleDropdown("facilities")
+								}
+								onBuildingSelect={handleBuildingSelect}
+								drawerOpen={drawerOpen}
+								setDrawerOpen={setDrawerOpen}
+								setSelectedFacilityData={
+									setSelectedFacilityData
+								}
+								setPopup={setPopup}
+								markersData={markersData}
+								handleMarkerClick={handleMarkerClick}
+							/>
+						)}
 						{renderButtons}
 					</Box>
 					<Box
@@ -141,12 +162,17 @@ export default function CityHeader({
 							marginRight: 2,
 						}}
 					>
-						<SearchBar
-							markersData={markersData}
-							setDrawerOpen={setDrawerOpen}
-							setSelectedFacilityData={setSelectedFacilityData}
-							onBuildingSelect={handleBuildingSelect}
-						/>
+						{/* Renderização condicional de SearchBar */}
+						{!hasFacilityId && (
+							<SearchBar
+								markersData={markersData}
+								setDrawerOpen={setDrawerOpen}
+								setSelectedFacilityData={
+									setSelectedFacilityData
+								}
+								onBuildingSelect={handleBuildingSelect}
+							/>
+						)}
 						<IconButton>
 							<NotificationsOutlined />
 						</IconButton>

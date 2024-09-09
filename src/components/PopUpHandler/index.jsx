@@ -7,7 +7,7 @@ export default function PopupHandler() {
 	// Extrair os alertas dos buildings e criar um array único de alertas
 	const allAlerts = buildings.flatMap((building) => building.alerts);
 
-	const [alerts, setAlerts] = useState(allAlerts.slice(0, 3)); // Pega apenas os 3 primeiros alertas
+	const [alerts, setAlerts] = useState(allAlerts.slice(0, 1)); // Pega apenas os 3 primeiros alertas
 	const [isVisible, setIsVisible] = useState(false); // Estado para controle de visibilidade
 	const containerRef = useRef(null);
 

@@ -20,10 +20,10 @@ export const buildings = [
 		alerts: [
 			{
 				id: "AL#2444",
-				type: "Smoke Detected",
+				type: "Water Leak Detected",
 				building: "al-qusais-industrial-fifth-1",
 				location: "Basement Parking Area",
-				alarmType: "Smoke Alarm",
+				alarmType: "Water Leak Alarm",
 				time: "5 April, 23:06:23",
 				route: "al-qusais-industrial-fifth-1",
 				buildingId: "6627a7ebabf17a81b795dedb",

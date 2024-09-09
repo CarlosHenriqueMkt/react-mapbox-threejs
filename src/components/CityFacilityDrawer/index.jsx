@@ -9,8 +9,27 @@ import {
 import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import InfoCard from "../InfoCard";
-import { workOrdersByStatus } from "../../api/workOrdersByStatus";
-import { workOrdersSLABreachById } from "../../api/workOrderBySLABreach";
+
+// Mock data para substituir as chamadas de API
+const mockWorkOrders = {
+	totalRecords: 120,
+	data: [
+		{ status: "In Progress" },
+		{ status: "In Progress" },
+		{ status: "Closed" },
+		{ status: "In Progress" },
+		{ status: "Closed" },
+		// mais dados...
+	],
+};
+
+const mockSLAData = {
+	slaBreach: {
+		data: {
+			restoration: 5,
+		},
+	},
+};
 
 export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 	const [sla, setSLA] = useState(null);
@@ -21,9 +40,9 @@ export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 
 	useEffect(() => {
 		if (facilityData?.id) {
-			const getTotalWorkOrders = async () => {
-				const workOrders = await workOrdersByStatus(facilityData.id);
-				console.log(workOrders);
+			// Substitui as funções de chamada de API com dados mockados
+			const getTotalWorkOrders = () => {
+				const workOrders = mockWorkOrders;
 				if (workOrders) {
 					setWorkOrder(workOrders);
 					const counts = workOrders.data.reduce((acc, workOrder) => {
@@ -41,8 +60,8 @@ export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 				}
 			};
 
-			const getTotalSLA = async () => {
-				const total = await workOrdersSLABreachById(facilityData.id);
+			const getTotalSLA = () => {
+				const total = mockSLAData;
 				if (total) {
 					setSLA(total);
 				} else {
