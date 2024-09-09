@@ -18,36 +18,21 @@ import {
 	Visibility,
 	VisibilityOff,
 } from "@mui/icons-material";
-import { login } from "../../api/authService"; // Importe o serviço de autenticação
 
 export default function LoginPage() {
 	const theme = useTheme();
 	const [showPassword, setShowPassword] = React.useState(false);
-	const [username, setUsername] = React.useState("");
-	const [password, setPassword] = React.useState("");
-	const [rememberMe, setRememberMe] = React.useState(false); // Estado para o checkbox "Remember Me"
-	const [errorMessage, setErrorMessage] = React.useState(""); // Estado para a mensagem de erro
+	const [username, setUsername] = React.useState("admin");
+	const [password, setPassword] = React.useState("password");
+	const [rememberMe, setRememberMe] = React.useState(false);
+	const [errorMessage, setErrorMessage] = React.useState("");
 	const navigate = useNavigate();
-
-	React.useEffect(() => {
-		// Verifica se as credenciais estão armazenadas no localStorage
-		const savedUsername = localStorage.getItem("savedUsername");
-		const savedPassword = localStorage.getItem("savedPassword");
-		if (savedUsername && savedPassword) {
-			setUsername(savedUsername);
-			setPassword(savedPassword);
-			setRememberMe(true);
-		}
-	}, []);
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-	const handleLogin = async () => {
-		try {
-			// Tenta fazer login com o nome de usuário e senha fornecidos
-			await login(username, password);
-
-			// Salva as credenciais se o checkbox "Remember Me" estiver marcado
+	const handleLogin = () => {
+		// Simulação de login sem necessidade de API
+		if (username === "admin" && password === "password") {
 			if (rememberMe) {
 				localStorage.setItem("savedUsername", username);
 				localStorage.setItem("savedPassword", password);
@@ -56,17 +41,10 @@ export default function LoginPage() {
 				localStorage.removeItem("savedPassword");
 			}
 
-			// Se o login for bem-sucedido, redireciona para a página /dubai
+			// Redireciona para a página /dubai após o login simulado
 			navigate("/dubai");
-		} catch (error) {
-			// Verifica se o erro está no login ou na senha
-			if (error.message.includes("username")) {
-				setErrorMessage("Incorrect username. Please try again.");
-			} else if (error.message.includes("password")) {
-				setErrorMessage("Incorrect password. Please try again.");
-			} else {
-				setErrorMessage("Login failed. Please check your credentials.");
-			}
+		} else {
+			setErrorMessage("Login failed. Please check your credentials.");
 		}
 	};
 
@@ -126,8 +104,8 @@ export default function LoginPage() {
 					variant="outlined"
 					fullWidth
 					margin="normal"
-					value={username} // Bind ao estado de username
-					onChange={(e) => setUsername(e.target.value)} // Atualiza o estado de username
+					value={username}
+					onChange={(e) => setUsername(e.target.value)}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position="start">
@@ -142,8 +120,8 @@ export default function LoginPage() {
 					type={showPassword ? "text" : "password"}
 					fullWidth
 					margin="normal"
-					value={password} // Bind ao estado de password
-					onChange={(e) => setPassword(e.target.value)} // Atualiza o estado de password
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position="start">
@@ -182,7 +160,7 @@ export default function LoginPage() {
 					color="primary"
 					fullWidth
 					sx={{ marginTop: theme.spacing(3) }}
-					onClick={handleLogin} // Chama a função handleLogin ao clicar
+					onClick={handleLogin}
 				>
 					Login
 				</Button>

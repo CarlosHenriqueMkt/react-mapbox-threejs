@@ -3,11 +3,12 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import NotFound from "../pages/NotFound";
 import Dubai from "../pages/Dubai";
 import FacilityView from "../components/FacilityView";
+import LoginPage from "../pages/Login";
 
 const AppRoutes = () => {
 	return (
 		<Routes>
-			<Route path="/" element={<DubaiWithUI />} />
+			<Route path="/" element={<LoginPage />} />
 			<Route path="/dubai/*" element={<DubaiWithUI />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>
