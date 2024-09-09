@@ -117,7 +117,7 @@ export default function CityHeader({
 				>
 					<Box display="flex" alignItems="center" gap="16px">
 						<Viewer />
-						<Link href="/dubai">
+						<Link href="/">
 							<Box
 								component="img"
 								src="/logo.png"
