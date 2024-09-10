@@ -72,20 +72,6 @@ export default function LoginPage() {
 		>
 			<Box
 				sx={{
-					width: "fit-content",
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					justifyContent: "center",
-					padding: theme.spacing(2),
-				}}
-				className="imageWrapper"
-			>
-				<img src="/logo.png" alt="Virtu-X" />
-				<img src="/cityscape.png" alt="Cityscape" />
-			</Box>
-			<Box
-				sx={{
 					width: { xs: "100%", md: "70%", lg: "30%" },
 					display: "flex",
 					flexDirection: "column",
