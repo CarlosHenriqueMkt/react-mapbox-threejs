@@ -207,7 +207,7 @@ export default function CityFacilityDrawer({ open, onClose, facilityData }) {
 				<Button
 					variant="contained"
 					color="primary"
-					onClick={handleViewFacility}
+					onClick=""
 					sx={{ width: "100%" }}
 				>
 					View Facility
